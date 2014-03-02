@@ -1,6 +1,8 @@
 BURDShell
 =========
 
-Project management platform
+Developer platform shell.
 
-Please see __documents/ folder for further information.
+Please read __documents/readme.txt for further information.
+
+
