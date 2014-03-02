@@ -1,0 +1,258 @@
+===========================
+NATIVE: Ubuntu installation
+===========================
+You can choose another username other than 'sysadmin'.   You will need to update /path/to/shell/Config.php and change $shell_user.
+
+Installation
+=============
+1) Install the following important software
+
+	sudo apt-get install subversion
+
+	sudo apt-get install apache2
+	sudo apt-get install php5
+	
+	// Setup additional php5 mods
+    sudo apt-get install libapache2-mod-php5 php5-mysql php5-gd php5-mcrypt
+
+2) Set up database support
+
+	a. sudo apt-get install mysql-server
+			// Make note of 'root' password.
+
+	b. Edit /path/to/shell/Config.php and change $db_admin_pass to match the 'root' password.
+	
+	c. [OPTIONAL] 
+	
+			Setup default 'dbuser' for all projects with the password 'dbpass';
+			
+			GRANT USAGE ON * . * TO  'dbuser'@'%' IDENTIFIED BY  'dbpass' WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0 ;
+	
+			FLUSH PRIVILEGES ;
+		
+2) Setup shell rlwrap  (This allows for the shell to have it's own bash history)
+	
+	a. Install the rlwrap software
+	
+		sudo apt-get install rlwrap
+	
+	b. Set up alias to shell.php for user 'sysadmin' (Or the username you wish to use)
+		//!!!IMPROTANT make sure you are 'sysadmin' and not 'root'!!!!!!
+		
+		cd ~
+		vi .bash_aliases
+			--Add the following line----
+			alias shell.php='rlwrap -a shell.php'
+			--Add the following line----		
+		:wq
+
+3) Fetch and unpack the latest burdserver.dev.zip
+
+	cd /home/sysadmin/
+	//wget ?????					<--- Note this may be change soon
+	unzip burdserver.dev.zip		
+	
+4) Setup the alisa shell execution
+	
+	cd /home/sysadmin/burdserver.dev/BURDShell/
+	chmod +x shell.php
+	
+	
+	cd /usr/local/bin/
+	sudo ln -s /home/sysadmin/burdserver.dev/BURDShell/shell.php
+
+5) Setup the 'burdserver.dev' IP address (This allows for faster interaction with server)
+
+	a. Find out IP of machine
+	
+		ifconfig
+		
+	b. Setup /etc/hosts file
+
+		sudo bash	
+		echo "172.16.171.132  burdserver.dev" >> /etc/hosts
+
+6) Hopefully you should now be able to start using the shell.
+
+
+7) Set up shell os config settings
+	
+		cd /Users/sysadmin/burdserver.dev/BURDShell/
+		nano Config_OSx.php
+		
+			Change  $shell_user
+					$shell_folder
+					$app_folder
+					$backup_folder
+					$db_admin_pass
+
+8) Test BURDShell and tour of a senerio.
+
+	// Site create test
+		a. Run BURDShell in basic.dev environment	
+			shell.php basic.dev
+			
+		b. Create the website
+			site create
+				# You will see a message like 'echo "172.16.171.132  basic.dev" >> /etc/hosts'
+		c. Update your /etc/hosts file	
+		
+			sudo bash
+			echo "172.16.171.132  basic.dev" >> /etc/hosts
+
+		d. On your web browser visit http://basic.dev
+	
+	// SVN test
+		a. Run BURDShell in basic.dev environment	
+		
+			shell.php basic.dev
+			
+		b. Start svn server
+		
+			svn serve
+			
+		c. Create the SVN repo   (This will use the 
+		
+			svn create
+			svn help
+				// Copy command to checkout.
+			quit
+				// Hopefully you left shell and now at terminal prompt.
+				
+		d. Checkout project
+		
+			cd /home/sysadmin
+			mkdir Sites
+			// Now run the copied 'checkout command
+			
+		e. You should now be able check in work.
+		
+	// SVN Commit test
+	
+		a. Copy the basic site structure setup via previous step
+		
+			cd /home/sysadmin/burdserver.dev/sites/
+			cp -R basic.dev/ /home/sysadmin/Sites				<---- Sites if your working project folder
+			
+		b.  Commit the changes in SVN
+			cd /home/sysadmin/Sites/basic.dev
+			svn add *
+			svn commit
+			
+				// For pico
+					Insert text "Initial project structure"
+					<CTRL>+x
+					<RETURN>
+			
+				// For 'vi' you need to 
+						Press 'i' 
+						Insert text "Initial project structure"
+						Press 'esc'
+						Type :wq
+						<RETURN>			
+						
+						
+		c.  Enter shell and view the commit
+		
+			shell.php basic.dev
+			svn log							<---- This shows your last commit
+			svn revision 1
+					
+	// Backup test
+		a. Run BURDShell in basic.dev environment	
+		
+			shell.php basic.dev
+		
+		b. Create SVN backup
+		
+			backup svn
+		
+		c. Delete project
+		
+			svn delete
+			
+		d. Restore project
+		
+			restore svn
+			
+	// Database test
+		a. Run BURDShell in basic.dev environment	
+		
+			shell.php basic.dev
+		
+		b. Create database
+		
+			database create
+	
+		c. List the database
+		
+			database list
+			//You will need to manually DROP the database - Command not included for safety of accidental delete database.
+
+This concludes the tour of the shell :) Enjoy.
+
+OPTIONAL: Setup Virtual machine public broadcasting (EXPRIMENTAL)
+=================================================================
+IMPORTANT
+---------
+Before going futher, please understand 'switching-networks.txt' with your virtual machine client.
+
+ABOUT
+-----
+BURDShell provides experimental network switching commands to allow projects to be visible to phsyical network.
+	
+	Known issues:
+			Should you change to dynamic whilst in a foriegn network wifi you may need to restart the network 
+			You may also need to change the network interfaces also.
+			You may need to restart your virtual machine for the changes to take affect.
+
+This setup assume you have the network setup.  
+Should you wish to change physical networks, you need to change these accordingly.
+
+			virtual machine IP: 192.168.1.101 as statuc
+			YOUR dns servers  : 62.208.15.90 62.208.15.89
+
+ENABLE NETWORK SWITCHING
+------------------------
+To enable support for switching network environments do the following
+
+1) Copy the orignal network settings
+
+    cd /etc/network/
+    sudo cp interfaces interfaces.original
+    sudo cp interfaces interfaces.dynamic
+    sudo chmod 600 interfaces.original
+
+2) Change eth0 to static
+
+	a. sudo vi interfaces
+			// Add the following
+	    
+	    iface eth0 inet static
+	    address 192.168.1.101
+	    netmask 255.255.255.0
+	    gateway 192.168.1.254
+	    dns-nameservers 62.208.15.90 62.208.15.89
+	    
+	b. Save and exit vi    
+	    :wq
+	    
+3) Make a copy for future use
+	
+	sudo cp interfaces interfaces.static
+    
+4) Set up BURDShell into virtual machine mode
+
+	a. Edit shell config 
+
+		vi /path/to/shell/Config.php
+	
+	b. Set $virtual_machine to be TRUE.
+	
+	c. Save and exit vi
+		
+		:wq
+	
+5) You should now be able to use 'network static' and 'network dynamic'.
+
+When changing network environments, you may need to restart the virtual machine.

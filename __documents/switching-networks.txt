@@ -1,0 +1,102 @@
+/*
+    BURDShell: Developer platform shell
+    Copyright (C) 2014  Paul Burden
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+Switching networks [*nix]
+=========================
+
+
+There is 'Bridged' for allowing the virtual machine to be visible to other machines on the physical network
+	//Internet is visible
+	
+There is 'NAT' for virtual networking between virtual machine over a private network (Verify this) .
+	// Not sure if internet is visible
+	
+There is 'Host only' is virtual networking between the host and and the machine only.
+	//Internet is currently hidden
+
+	
+
+Private host networking
+=======================
+The virtual machine and host machine can only see each other.
+
+	VIRTUAL MACHINE CLIENT
+	----------------------	
+		Make sure 'Network adaptor' is set to 'Host only'
+		
+	VIRTUAL MACHINE
+	---------------
+		Make sure /etc/network/interfaces file contains the following:
+	
+		--- Start of interfaces ---
+		# The loopback network interface
+		auto lo
+		iface lo inet loopback
+		
+		# The primary network interface
+		auto eth0
+		iface eth0 inet dhcp
+		--- End of interfaces ---
+	
+	BURSHELL commands: 
+	------------------		
+		1) network dynamic
+		2) network status
+		
+		Note down eth0 IP and make sure your 'host machine' /etc/hosts' uses this IP for projects.
+	
+Restart server.
+	
+	
+Private networking on local phsyiscal network
+=============================================
+Should you wish to share your development with other people on the local phsyical network.
+
+This set up makes sure it is a static IP, so you don't need to worry about changing /etc/hosts files.
+
+	VIRTUAL MACHINE CLIENT
+	----------------------	
+		Make sure 'Network adaptor' is set to 'Bridged Adaptor'
+
+
+	VIRTUAL MACHINE
+	---------------
+		Make sure /etc/network/interfaces file contains the following:
+	
+		!!!! IMPORTANT!!!!!! 
+		Make sure you select your desired static IP.
+		Make sure you known your dns server.
+	
+		--- Start of interfaces ---
+
+	    iface eth0 inet static
+	    address 192.168.1.101
+	    netmask 255.255.255.0
+	    gateway 192.168.1.254
+	    dns-nameservers 62.208.15.90 62.208.15.89
+
+		--- End of interfaces ---
+
+	BURSHELL commands: 
+	------------------		
+		1) network static
+		2) network status
+
+
+Restart server
+

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>[PROJECT]</title>
+		<script type="text/javascript">
+			/* RAW JS if you wish. */
+		</script>
+		<style type="test/css">
+		/* RAW CSS if you wish. */
+		</style>
+		<!-- <link rel="shortcut icon" href="" /> -->
+		<!-- <link rel="stylesheet" type="text/css" href="" /> -->
+		<!-- <script type="text/javascript" src=""></script> -->
+	</head>
+	<body>
+		Welcome to [PROJECT].
+	</body>
+</html>

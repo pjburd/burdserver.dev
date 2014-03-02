@@ -1,0 +1,974 @@
+/*
+    BURDShell: Developer platform shell
+    Copyright (C) 2014  Paul Burden
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+Ubuntu 12.04.2-server i386.iso : Server install steps
+=====================================================
+
+
+Base memory size: either 256mb or 1024mb
+Disk size: 3gb or 20gb              
+
+Use 20gb if you wish to have development environment.
+
+This server will set up IP:192.168.1.101
+
+Fetaure requirements
+--------------------
+SVN
+Apache2
+FTP
+PHP
+SSH
+MySQL
+Email server
+UFW
+
+
+Handy linux command
+===================
+
+Generate random password
+------------------------
+< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo;
+
+Current server details
+======================
+[!!! Change these are you see fit !!!]
+
+Root user       
+---------
+sysadmin: Password1
+
+ssh
+---
+ssh sysadmin@192.168.1.101 -p 22543
+
+certificates
+-----------
+CSR pass phrase: uSZP3-o4_dzRgRqO7VNpiIIyiB8L1FDV
+Insecure: Co4t
+
+*******************************************************************************
+******************************** SERVER INSTALATION ***************************
+***************                     STARTS HERE                     ***********
+**************************************  :)  ***********************************
+*******************************************************************************
+
+
+
+0 Virtualbox Image Setup
+=========================
+
+a. Setup Network to be 'bridged'
+// So we can SSH into the virtual machine via guest's terminal.
+  
+    Settings->Network->Adaptor 1->Bridged Adaptor
+                                
+// When you type 'ifconfig' you should see an IP that you can use.
+// Make sure 'guest machine' uses DHCP.  Or you may need to configure a static IP for both.
+
+b. Setup Storage for ISO        // The chosen virtual CD image of the server installation.
+
+    Settings->Storage->Storage Tree->IDE Controller->Empty->Attributes->CD/DVD Drive:[Choose .iso file]
+
+c. Boot virtual machine
+
+
+1 Install OS base system
+=========================
+Boot machine with USB
+
+1.1 Setup keyboard and language
+---------------------------
+a. Select inital language 
+        "English"
+      and then press <ENTER> key.
+
+b. Select installation
+    "Install Ubuntu Server" 
+     and then press <ENTER> key.
+c. Select Language 
+        "English - English" 
+         and then press <ENTER> key.
+d. Select country, territory or area
+        "United Kingdom"
+         and then press <ENTER> key.
+e. Detect keyboard layout
+       "No"
+        and then press <ENTER> key.
+f. Select Country of origin for the keyboard 
+        "English (UK)"
+         and then press <ENTER> key.
+g. Select Keyboard Layout
+     "English (UK)"
+      and then press <ENTER> key.
+
+// Additional components will load followed by futher auto configuration of networks
+
+1.2 Setup network
+-----------------
+a. Type Hostname
+    "burdserver"
+    and then press <ENTER> key.
+
+1.3 Setup initial user
+----------------------
+a. Fullname for the new user
+    "System administrator"
+    and then press <ENTER> key.
+
+b. Username for your account
+    "systemadmin"
+    and then press <ENTER> key.
+
+c. Set up password
+        [Use default simple, will secure later]
+    
+    Save password into text file
+
+    You will have to manually type it (Take your time).
+    and then press <ENTER> key.
+
+    Then retype password
+    and then press <ENTER> key.
+
+d. Encyrypt your home directory?
+    "No"
+    and then press <ENTER> key.
+
+1.4 Setup time zone clock
+-------------------------
+a. Make sure timezone is set to 'Europe/London' 
+    then select "Yes" and press <ENTER> key.
+
+		CMD: dpkg-reconfigure tzdata
+		
+1.5 (OPTION1Recommended) Setup partition with 'Entire disk'
+-----------------------------------------------------------
+a. Select Partitioning method
+    "Guided - Use entire disk and set up LVM"       
+    and then press <ENTER> key.
+
+b. Select disk to partition:
+    "Choose your primary drive"
+    and then press <ENTER> key.
+
+c. Review changes and then select 'yes' to write changes to disk
+    "Yes"
+    and then press <ENTER> key.
+
+// Move onto step 1.6 to continue installation.
+
+1.5 (OPTION2) Setup partition with LVM
+---------------------------------------
+a. Select Patitioning method 
+    "Guided - Use entire disk and set up LVM"       
+    and then press <ENTER> key.
+
+b. Select disk to partition:
+    "Choose your primary drive"
+    and then press <ENTER> key.
+
+c. Review changes and then select 'yes' to write changes to disk and configure LVM
+    "Yes"
+    and then press <ENTER> key.
+
+d. Set the initial amount amount for LVM management
+     "2.0 GB"
+    and then press <ENTER> key.
+
+e. Review partition tables then select 'Yes' to write the changes to disk
+    "Yes"
+    and then press <ENTER> key.
+
+// System will install the base system.
+
+
+1.6 Configure package manager
+-------------------------
+// If current network is behind a proxy, then we need '[username]:[pass] @ [hostaddress]:[port]/' to access the outside world.
+
+a. Set http proxy information 
+    "Leave blank" otherwise [fill in details]
+    Select "continue"
+    and then press <ENTER> key.
+
+// System will retrieve files.
+
+1.7 Configure tasksel
+---------------------
+How do you want to manage upgrades on this system?
+    "No automatic updates"
+    and then press <ENTER> key.
+
+//System will have another server to switch two after tests have passed to switch servers.
+
+1.8 Configure intial software
+-----------------------------
+
+a Select software
+    !!!Don't select anything as we will configure things manually.!!!!
+Select "Continue"
+    and then press <ENTER> key.
+
+// System will install base software
+
+
+1.9 Configure GRUB
+------------------
+Select "Yes" to install the grub boot loader onto master boot record.
+
+
+1.10 Finish installation
+------------------------
+a.  Click "continue" to reboot machine
+
+b. Login as 'systemadmin'
+
+c. Become 'super user'
+    'sudo bash'
+
+c. Update software
+
+    apt-get update
+    apt-get upgrade
+    
+d. Set up VIM
+	
+	apt-get install vim
+
+2 Configure OpenSSH server
+===========================
+
+a. Get the software
+    apt-get install openssh-server
+
+b. backup original files
+    cp /etc/ssh/sshd_config /etc/ssh/sshd_config.original
+    chmod a-w /etc/ssh/sshd_config.original
+
+c. edit ssh_config
+    vi /etc/ssh/sshd_config
+
+d. Amend the following config settings to be these values:
+    Port 22543
+    PermitRootLogin no
+    PubkeyAuthentication yes
+    Banner /etc/issue.net
+
+e. Save the file with the vi command
+     :wq
+
+f. Change ssh banner
+    vi /etc/issue.net
+        Change the line to be
+            "Ubuntu 12.04.2 LTS - BURDServer"
+    :wq
+
+f. Restart SSH server
+     /etc/init.d/ssh restart
+     service ssh restart
+
+
+
+
+3 Configure Firewall for SSH
+=============================
+// You can use 'sudo ufw status'
+
+a. Enable Firewall
+    ufw enable
+
+b. Deny from all first
+    ufw default deny
+
+c. Open port for SSH
+    ufw allow 22543
+    //Port number can be from 1 to 65535 - so long it is not in use.
+    //See http://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers
+
+d.  SSH into nicer terminal
+   // Nicer terminal that you can copy and paste with.
+
+
+4 Set network IP to static
+===========================
+
+a. Copy the orignal network settings
+
+    cd /etc/network/
+    cp interfaces interfaces.original
+    cp interfaces interfaces.dynamic
+    chmod 600 interfaces.original
+
+b. Change eth0 to static
+    //We need to set the nameservers as DHCP is switched off now.
+    //You also have to designate the gateway (The router IP) 
+    //!!!!!! You may need to change the IP address for the name servers !!!!!!!!
+    
+    iface eth0 inet static
+    address 192.168.1.101
+    netmask 255.255.255.0
+    gateway 192.168.1.254
+    dns-nameservers 62.208.15.90 62.208.15.89
+    
+c. Make a copy for future use
+	
+	cp interfaces interfaces.static
+    
+c. Restart the server
+    //You can reset the networking, but I'm lazy here for now.    [!!!This can be network restart ]
+
+    shutdown -r 0    
+
+d. On your HOST machine edit /etc/hosts file and add
+
+    192.168.1.101   burdserver.dev
+
+5 Setup FTP
+============
+
+a. #apt-get install proftpd
+
+b. Use 'standalone'
+
+c. allow ftp ports for ftp and sftp
+    ufw allow 20
+    ufw allow 21
+
+6 Apache2
+===========
+a. #apt-get install apache2
+
+b. a2enmod rewrite
+
+c. allow ftp ports for http
+    ufw allow 80
+
+d. Edit /etc/apache2/httpd.conf
+	//This is to remove the error 'apache2: Could not reliably determine the server's fully qualified domain name, using 127.0.1.1 for ServerName'
+	
+	cd /etc/apache2/
+	cp httpd.conf httpd.conf.original
+	vi httpd.conf
+	
+		Add the line
+			'ServerName localhost' 
+			
+		Save the file
+			:wq
+
+e. Restart apache server
+	service apache2 reload
+			
+
+7 MySQL
+========
+a. #apt-get install mysql-server
+
+b. Set password to : Password1
+
+8 PHP5
+======= 
+//The update helps refesh the repo 
+a. #apt-get update
+
+b. #apt-get install php5
+
+c. Install additional modules 
+    
+    apt-get install libapache2-mod-php5
+    apt-get install php5-mysql
+    apt-get install php5-gd
+    apt-get install php5-mcrypt
+
+d. Restart apache2
+    
+    service apache2 reload
+
+e. Create a test phpinfo file in /var/www/ 
+    vi /var/www/phpinfo.php 
+    Add the following to test <html><body><?php phpinfo(); ?></body></html>
+
+f. On your HOST machine web browser test PHP is running
+
+    Visit http://192.168.1.101/phpinfo.php
+    
+
+9 Setup sysadmin www
+====================
+
+// You create sites as 'sysadmin'. 
+// Then create alisa site configs to those
+
+Create sites folder
+a. cd /home/sysadmin
+   mkdir sites
+   
+ //You can then duplicate /etc/apache2/sites-available/default to and enable with a2ensite  
+   
+   
+10 Setup phpmyadmin
+===================
+
+a. As sysadmin user set up sites folder
+    
+    ##exit out of sudo  !!!Must be sysadmin user!!!
+    cd /home/sysadmin/sites/
+    wget http://downloads.sourceforge.net/project/phpmyadmin/phpMyAdmin/4.0.8/phpMyAdmin-4.0.8-english.tar.gz 
+    tar -zxvf phpMyAdmin-4.0.8-english.tar.gz 
+    mv phpMyAdmin-4.0.8-english mysql.dev 
+
+b. Set up apache2 virtualhost
+
+    sudo bash
+    cd /etc/apache2/sites-avaiable/
+    cp default mysql.dev
+    vi mysql.dev
+    
+-----------Start of mysql.dev-------
+<VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+        ServerName mysql.dev 
+        DocumentRoot /home/sysadmin/sites/mysql.dev
+        <Directory />
+                Options FollowSymLinks
+                AllowOverride None
+        </Directory>
+        <Directory /home/sysadmin/sites/[site_address]/>
+                Options Indexes FollowSymLinks MultiViews
+                AllowOverride None
+                Order allow,deny
+                allow from all
+        </Directory>
+
+        ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+        <Directory "/usr/lib/cgi-bin">
+                AllowOverride None
+                Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+                Order allow,deny
+                Allow from all
+        </Directory>
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    Alias /doc/ "/usr/share/doc/"
+    <Directory "/usr/share/doc/">
+        Options Indexes MultiViews FollowSymLinks
+        AllowOverride None
+        Order deny,allow
+        Deny from all
+        Allow from 127.0.0.0/255.0.0.0 ::1/128
+    </Directory>
+
+</VirtualHost>
+-----------End of mysql.dev-------
+
+c.  Enable mysql.dev virtualhost on apache2
+    a2ensite mysql.dev
+    service apache2 reload
+    
+d. On your HOST machines edit /etc/hosts file and add the following
+
+    192.168.1.101    mysql.dev
+        
+e. Enable config.inc.php
+
+    i. Aftp into sysadmin and duplicate config.sample.inc.php
+
+    ii. Rename config.sample.inc.php
+    iii. Change blowfish characters to some random
+    
+        < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo;
+
+f. On your HOST machines test you visit http://mysql.dev     
+
+
+g. Set up basic user for development (OPTIONAL)
+
+	CREATE USER 'dbuser'@'%' IDENTIFIED BY  '***';
+	GRANT USAGE ON * . * TO  'dbuser'@'%' IDENTIFIED BY  'dbpass' WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0 ;
+
+
+11) BURDShell
+==============
+a.	Install shell wrapper
+	//This help detect keys like 'Backspace'
+	
+	sudo apt-get rlwrap
+
+b. Set up alias to shell.php for user 'sysadmin'
+	//!!!IMPROTANT make sure you are 'sysadmin' and not 'root'!!!!!!
+	exit	
+	cd ~
+	vi .bash_aliases
+		--Add the following line----
+		alias shell.php='rlwrap -a shell.php'
+		--Add the following line----		
+	:wq
+	    
+*******************************************************************************
+*******************************************************************************
+*************** AS of this point you can now start using the server ***********
+****************************************  :)  *********************************
+*******************************************************************************
+
+
+*************************
+OPTIONAL EXTRAS [ssl+svn]
+*************************
+
+1. Generate self signed certificate
+===================================
+
+a. Type the following to generate random password for 'passphase'
+    < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo;
+
+    //Note down password for step 'b'     
+
+b. Generate the keys for the Certificate Signing Request (CSR) 
+    
+    openssl genrsa -des3 -out server.key 2048
+
+c. Enter pass phrase for server.key:
+    //Noted from step 'a'.    (Also saved at the top).
+
+d. Create insecure key. !!!! NOTE You must use the passphrase set up from step .c !!!!!
+
+    openssl rsa -in server.key -out server.key.insecure
+    mv server.key server.key.secure
+    mv server.key.insecure server.key
+   
+e. Create the self-signed request
+
+   openssl req -new -key server.key -out server.csr
+
+        //Use the following settings:
+        Country name: UK
+        State:Berkshire
+        City:Reading
+        Organization name: Burd Solutions Ltd
+        Organiszational Unit Name: Servers
+        Common Name: burdserver
+        Email Address: support@burdserver.dev
+        A challenge password: T_WFOem3ovr2ra08GY65
+        An optional company name: Burd solutions
+    
+g. Create self-signed certificate
+
+    openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+
+g. Install certificate
+
+    sudo cp server.crt /etc/ssl/certs
+    sudo cp server.key /etc/ssl/private
+
+
+2 SVN
+======
+
+2.0 Install svn
+
+    sudo apt-get install subversion
+
+2.1 Set up repo
+---------------
+a. Create subversion group
+
+    sudo groupadd subversion
+    
+b. Assign group to sysadmin and www-data(For WEBDAV)
+
+    sudo usermod -a -G subversion sysadmin
+    sudo usermod -a -G subversion www-data
+
+c. Create repo folder
+    cd /home/sysadmin
+    mkdir svn
+
+d. Enable WebDav
+
+    sudo apt-get install libapache2-svn
+    sudo a2enmod dav                            !!!Hopefully already enabled!!! :)
+
+
+e. Allow SVN through firewall
+
+	//Anywhere
+    sudo ufw allow 3690
+    // Allow private network on svn(port)
+    sudo ufw allow from 192.168.1.0/24 to any port 3690
+
+
+2.3 Create website project
+--------------------------
+
+a. SSH as sysadmin
+
+    ssh sysadmin@192.168.1.101 -p 22543
+
+b. Create site 
+
+    cd sites
+    mkdir samplesite.dev
+    
+c. Duplicate /etc/apache2/sites/available/default to be newproject.dev
+
+************* START OF NEW PROJECT VIRTUALHOST ************
+<VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+
+        DocumentRoot /home/sysadmin/sites/wordpress.dev/public
+        <Directory />
+                Options FollowSymLinks
+                AllowOverride None
+        </Directory>
+        <Directory /home/sysadmin/sites/wordpress.dev/public/>
+                Options Indexes FollowSymLinks MultiViews
+                AllowOverride None
+                Order allow,deny
+                allow from all
+        </Directory>
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>
+************* END OF NEW PROJECT VIRTUALHOST ************
+
+
+
+d. Edit newproject.dev
+
+e. Update HOST machine /etc/hosts file
+
+    newproject.dev  [BURDSERVER STATIC IP]
+    
+2.4 Add SVN repo to website
+---------------------------
+
+a. Create project folder
+
+    cd /home/sysadmin/svn
+    sudo svnadmin create /home/sysadmin/svn/projectname
+    
+b. Correct permissions
+
+    cd /home/sysadmin/svn
+    sudo chown -R www-data:subversion projectname
+    sudo chmod -R g+rws projectname
+
+c. Set up WebDav
+
+    sudo vi /etc/apache2/mods-available/dav_svn.conf
+
+    Then add the following
+-----Start of required user----  
+  <Location /svn/pjburd.dev>
+     DAV svn
+     SVNPath /home/sysadmin/svn/pjburd.dev
+     AuthType Basic
+     AuthName "myproject subversion repository"
+     AuthUserFile /etc/subversion/passwd
+     <LimitExcept GET PROPFIND OPTIONS REPORT>
+        Require valid-user
+     </LimitExcept>
+  </Location>
+-----End of required user----
+
+d. Restart Apache2
+
+    sudo service apache2 reload
+
+d. Set up SVN user
+
+    sudo htpasswd -c /etc/subversion/passwd paul
+
+e. Test SVN project 
+
+    http://192.168.1.101/svn/pjburd.dev/
+
+f. Enable svnserve
+
+    sudo bash
+    cd /etc/init.d
+    wget http://odyniec.net/articles/ubuntu-subversion-server/svnserve
+    chmod +x /etc/init.d/svnserve
+    
+    vi /etc/init.d/svnserve
+        change DAEMON_ARGS to be 
+            DAEMON_ARGS="-d -r /home/sysadmin/svn"
+    update-rc.d svnserve defaults
+    service svnserve start
+    
+g. Any new projects created enable passwd-db
+
+    cd /home/sysadmin/svn/pjburd.dev/conf
+    sudo vi svnserve.conf
+    UNCOMMENT password-db = passwd
+    wq
+    sudo service svnserve restart
+
+2.5 All done :) Use SVN commands to checkout and commit
+
+    // On your HOST machine 'Apple Mac'
+    vi ~/.bash_profile
+        //Add the following line
+            export SVN_EDITOR=vim
+
+    // On your HOST machine
+        cd ~/Sites/
+        svn co svn://burdserver.dev/pjburd.dev pjburd.dev
+        OR
+        svn co svn+ssh://burdserver.dev/home/sysadmin/svn/pjburd.dev pjburd.dev --username paul
+        OR
+        svn co svn+ssh://paul@burdserver.dev/svn/pjburd.dev
+        
+        THEN
+        cd pjburd.dev
+        mkdir trunk
+        mkdir branches
+        mkdir tags
+
+    // [NOTE] HOST Machine 'Apple Mac' You need to install Xcode to get svn commands :)
+            
+    // [NOTE] First commit should have the folders setup first.
+            /trunk
+            /branches
+            /tags
+
+!!!!!! ISSSUE : Host clients cannot authenticate yet !!!!!!!!
+
+****************
+HARDENING SERVER   !!!!!! Should you wish to harden the server !!!!!!!!
+****************
+
+1) Disable CTRL+ALT+DEL
+=======================
+
+a. Edit the config
+    vi /etc/init/control-alt-delete.conf
+
+b. Comment out the line
+    #exec shutdown -r now "Control-Alt-Delete pressed"
+
+c. Save changes
+    :wq
+
+d. Find out IP address
+    ifconfig
+            //If not on your network, you may need to update the network adaptor to be 'bridged'
+
+d. Restart machine
+    shutdown -r 0
+
+e. SSH via new port from hostaddress
+        ssh systemadmin@virtualipaddress -p 22543
+
+f. sudo bash
+
+
+
+2 Set up rootkit
+=================
+
+sudo apt-get install chkrootkit
+
+3 Change sysadmin password
+==========================
+a. Type the following command in a terminal
+  
+   < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo;
+
+
+
+
+****************************
+OPTIONAL EXTRAS [trac] (WIP) !!!!! NOT TESTED - NOT PART OF BURDShell !!!!!!
+****************************
+Get is a bug and Subversion client
+
+http://trac.edgewall.org/wiki/TracDownload
+
+Installation
+------------
+See INSTALL file in current release.
+
+a. Setup python lib
+    wget http://peak.telecommunity.com/dist/ez_setup.py
+    sudo python ez_setup.py    
+    sudo easy_install Genshi
+
+    sudo python ./setup.py install
+    
+    sudo ufw allow from 192.168.1.0/24 to any port 8000
+
+b.  Setup subversion plugin
+
+    sudo apt-get install python-subversion
+
+c. Set up deploy skeleton  (WIP  !!!!!Must be in /home/sysadmin/trac!!!! For ease of accessing via ftp)
+
+    sudo bash
+    
+    mkdir /home/sysadmin/trac
+    
+    mkdir -p /usr/local/share/trac/projects/my-project
+    trac-admin /usr/local/share/trac/projects/my-project initenv
+        //Name the project 'Trac'
+    trac-admin /usr/local/share/trac/projects/my-project deploy /tmp/deploy
+    mv /tmp/deploy/* /usr/local/share/trac
+    
+d. Set up Apache to read Trac
+    //Further info http://trac.edgewall.org/wiki/TracInstall#RunningTraconaWebServer
+
+    i. Create /sites-avialable/trac/
+    
+    ii Add the follwoing inside the <virtualhost>
+    
+    Alias /trac/chrome/common /path/to/trac/htdocs/common
+    Alias /trac/chrome/site /path/to/trac/htdocs/site
+    
+    <Directory "/path/to/www/trac/htdocs">
+      Order allow,deny
+      Allow from all
+    </Directory>
+
+****************************
+OPTIONAL EXTRAS [mailserver] !!!!!! NOT TESTED !!!!!
+****************************
+
+1) Install Mail server
+======================
+// Enabling sending and recieving email 
+
+a. Install 'postfix' software
+    sudo apt-get install postfix
+
+b. Configure 'postfix' with the following
+    
+    General mail configuration: "Internet Site"
+    System mail name: "mail.burdserver.dev"
+    Root and postmaster mail recipient: "systemadmin"
+    Other desinations to accept mail for: "burdserver, localhost.localdomain, , localhost"
+    Force synchronous updates on mail queue?: "No"
+    Local networks: "127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128"
+    Mailbox size limit (bytes): "0"
+    Local address extension character: "+"
+    Internet protocols to use: "all"
+
+// You can re-configure by typing 'sudo dpkg-reconfigure postfix'
+
+c. Configure the MailDir to be within home directory
+
+    sudo postconf -e 'home_mailbox = Maildir/'
+
+d. Setup SMTP authentication
+
+    sudo postconf -e 'smtpd_sasl_type = dovecot'
+    sudo postconf -e 'smtpd_sasl_path = private/auth-client'
+    sudo postconf -e 'smtpd_sasl_local_domain ='
+    sudo postconf -e 'smtpd_sasl_security_options = noanonymous'
+    sudo postconf -e 'broken_sasl_auth_clients = yes'
+    sudo postconf -e 'smtpd_sasl_auth_enable = yes'
+    sudo postconf -e 'smtpd_recipient_restrictions = permit_sasl_authenticated,permit_mynetworks,reject_unauth_destination'
+
+e. Setup Certificate
+
+    sudo postconf -e 'smtp_tls_security_level = may'
+    sudo postconf -e 'smtpd_tls_security_level = may'
+    sudo postconf -e 'smtp_tls_note_starttls_offer = yes'
+    sudo postconf -e 'smtpd_tls_key_file = /etc/ssl/private/server.key'
+    sudo postconf -e 'smtpd_tls_cert_file = /etc/ssl/certs/server.crt'
+    sudo postconf -e 'smtpd_tls_loglevel = 1'
+    sudo postconf -e 'smtpd_tls_received_header = yes'
+    sudo postconf -e 'myhostname = mail.example.com'
+
+f. If using own signed certificates (MOST LIKELY)
+
+    sudo postconf -e 'smtpd_tls_CAfile = /etc/ssl/certs/cacert.pem'
+
+g. Restart postfix
+
+    sudo /etc/init.d/postfix restart
+
+h. Configuring SASL
+
+    sudo apt-get install dovecot-common
+    
+i. edit /etc/dovecot/dovecot.conf
+    vi /etc/dovecot/dovecot.conf
+
+[BROKEN-SKIP FOR NOW]
+j. Add the following to bottom
+//!!!MISSING IN CONF!!!!!!!!----NEED TO FIND OUT WHY!!!!!!!
+  socket listen {
+    #master {
+      # Master socket provides access to userdb information. It's typically
+      # used to give Dovecot's local delivery agent access to userdb so it
+      # can find mailbox locations.
+      #path = /var/run/dovecot/auth-master
+      #mode = 0600
+      # Default user/group is the one who started dovecot-auth (root)
+      #user = 
+      #group = 
+    #}
+    client {
+      # The client socket is generally safe to export to everyone. Typical use
+      # is to export it to your SMTP server so it can do SMTP AUTH lookups
+      # using it.
+      path = /var/spool/postfix/private/auth-client
+      mode = 0660
+      user = postfix
+      group = postfix
+    }
+
+[BROKEN-SKIP FOR NOW]
+k. In order to let Outlook clients use SMTP-AUTH, in the auth default section of /etc/dovecot/dovecot.conf add "login":
+
+    mechanisms = plain login
+
+l. Restart Dovecot
+
+    sudo /etc/init.d/dovecot restart
+
+4) Install Mail Delivery Agent
+==============================
+sudo apt-get install dovecot-imapd dovecot-pop3d
+
+
+
+=============
+d. Install mailutils
+    sudo apt-get install mailutils
+
+-) Setup static IP networking
+=============================
+
+

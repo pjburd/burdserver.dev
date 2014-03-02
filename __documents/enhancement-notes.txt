@@ -1,0 +1,230 @@
+
+
+Future enhancements
+===================
+
+
+New Commands
+============
+
+Modulaize commands so that can be switched on and off.
+
+App
+---
+Add support to fetch apps
+
+	e.g. app get phpMyAdmin		// In theory this should get the latest phpMyAdmin
+
+Add support for 'wordpress' app install
+
+		// Requires 'database_exists' function
+
+Debug
+-----
+Add 'debug log errors' : This will run "tail -10" on error log
+	 
+Add cron feature
+----------------
+	To switch on backups
+	
+		.e.g cron add backup
+		
+				How often (Monthly, daily, weekly)?
+				
+
+Attach on Ubuntu to forward backups to outside
+	//This will only with 'bridged' Warn the user about this.
+
+
+svn
+---
+list branches
+	svn ls svn://burdserver.dev/home/sysadmin/burdserver.dev/svn/burdserver.dev/ --verbose
+
+list tags
+	svn ls svn://burdserver.dev/home/sysadmin/burdserver.dev/svn/burdserver.dev/tags --verbose
+
+
+tagging a release
+
+svn tag 1.0b
+
+	svn copy http://svn.example.com/project/trunk \
+    	  http://svn.example.com/project/tags/1.0 -m "Release 1.0"
+
+	 svn copy svn://burdserver.dev/home/sysadmin/burdserver.dev/svn/burdserver.dev/trunk \
+	          svn://burdserver.dev/home/sysadmin/burdserver.dev/svn/burdserver.dev/tags/1.0b -m "Release 1.0b" --username sysadmin
+
+
+'svn user paulb'    This will list access allowed for user
+	svn user [username]
+
+'svn user delete paulb'  //This will delete the user and any security
+	svn user delete [username]
+
+'svn user add paulb'  //This will add the user 		
+
+	svn user add [username]
+
+'svn grants' list known permissions (cat authz)
+
+'svn grant paulb /path/to/folder rw'   // This will add permission to read/write to a folder for user 'paulb'
+
+
+
+'svn grant paulb /path/to/folder rw'   // This will delete permission to read/write to a folder for user 'paulb'
+
+webserver
+----------
+
+Add apache2 commands
+
+	a2enmod
+	a2dismod
+	apachectl -t -D DUMP_MODULES	: Lists known modules
+			  -t -D DUMP_VHOSTS		: List known virtual hosts
+		 
+
+
+Shell
+=====
+
+Command history
+---------------
+Add PHP Readline support
+
+	http://uk1.php.net/readline
+	
+	Hopefully make rlwrap a redundant step [possibly
+
+Documentation thoughts
+----------------------
+
+http://www.mediawiki.org/wiki/Extension:DumpHTML
+
+Create SVN commands to tag version.
+
+Create phpmyadmin commands to install or update phpmyadmin
+
+Create commands to duplciate project into 'stage' and 'testing'.
+
+Split database backup into 'data' and 'structure'.
+
+Create friendly documentation
+	BURDShell environment installation
+		Native Mac 10.9
+		Native Ubuntu 12.04 LTS		
+		Virtual machine
+		As [username]
+
+	BURDShell installation		
+		Quick installation
+		Long detailed installation
+		
+	BURDShell
+		Quick start guides
+			Start shell.php in a project environment
+			Create a site
+			Setting up SVN
+			Commit changes
+			Switching network from private to public
+			Making a backup
+			
+		Site
+			About sites (aka projects)
+			Creating a site
+			Deleteing a site
+			Switching site environments
+			
+		Version control
+			About version control
+			Creating a version control
+			Deleting a version control
+
+		Database
+			Create a database
+			Delete a database
+
+		Backups
+			Configure backup folder
+			Database
+			SVN
+			
+		Networking
+			Switching from public to private networks
+			Switching from public to private virtual machines
+			
+		Command index
+			[A to Z], description parameters and example use
+		
+	Look into running burdserver on apple Mac
+	
+Networking
+==========
+Add dns server
+	bare in mind
+		Wild card in dev entry in /etc/host file
+			e.g. 
+					.dev or *.dev (maybe)
+
+	If not a desktop
+		Running laptop on network, I would want use DNS to connect to the SHELL.
+
+
+Collabrative working mode
+=========================
+	Create a development 'group' privledge
+			NOT super user
+			
+	Dashboard area 
+		for listing all projects avaiable 
+		Port details and addresses
+
+Backup
+======
+Add Help text to supply Rsync to backup servers
+	E.g. "backup help"			
+
+Sudo bash : Hide th password or detect if allowed
+=================================================
+
+
+	Detect code
+			up vote
+			2
+			down vote
+			accepted
+			First, ask yourself what exactly defines a login "having root privileges". AFAICT there are 2 basic solutions.
+			
+			The old-school way, where sysadmins create multiple accounts with uid 0, which I - and I'm certainly not alone in this - consider to be a nightmare. In this scenario you could check all users in your list using posix_getpwnam and see if their uid matches 0.
+			
+			The following code snippet does just that, $privileged will contain the users with root privileges :
+			
+			$logins = array('root', 'john', 'guest', 'foo');
+			$privileged = array();
+			foreach($logins as $login) {
+			    $userInfo = posix_getpwnam($login);
+			    if ($userInfo !== FALSE) {
+			        if ($userInfo['uid'] == 0) {
+			          $privileged[] = $login;
+			        }
+			    }
+			}
+			The other (and imho only sane) way to do this is to add all users with root/administrative privileges to a specific group (wheel or admin are already used in different Linux distributions, find out which one works for you). This scenario is even simpler, since you can use posix_getgrnam to fetch all members in a specific group.
+			
+			The following code snippet will match an array of logins you provide, and see who's a member with specific privileges, again $privileged will contain the result (ie. the users in your list that are a member of the group you specified) :
+			
+			$logins = array('root', 'john', 'guest', 'foo');
+			$privileged = array();
+			$groupInfo = posix_getgrnam('admins');
+			if ($groupInfo !== FALSE) {
+			    $privileged = array_intersect($logins, $groupInfo['members']);
+			}
+			
+
+
+	Hide password when typing 'password' for sudo
+		//Color????
+	Hide password when prompted for password for database administration
+		//Color????
+	

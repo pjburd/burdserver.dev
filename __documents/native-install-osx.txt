@@ -1,0 +1,285 @@
+===========================
+NATIVE: OSx installation
+===========================
+You can choose another username other than 'sysadmin'.   You will need to update /path/to/shell/Config.php and change $shell_user.
+
+
+References
+==========
+http://coolestguidesontheplanet.com/get-apache-mysql-php-phpmyadmin-working-osx-10-9-mavericks/
+http://stackoverflow.com/questions/1293484/easiest-way-to-activate-php-and-mysql-on-mac-os-10-6-snow-leopard-10-7-lion
+
+
+
+Installation
+=============
+
+0) Set up Software
+	rlwrap [OPTIONAL NOT TESTED in OSx environment yet]   Pondering 'http://uk1.php.net/readline' for a better solution.
+	
+		// http://www.macports.org/install.php
+		// sudo port install rlwrap
+
+	SVN
+		Standard SVN
+			/usr/bin/svn
+			
+		Latest SVN
+			Install XCode
+		
+				[WORK IN PROGRESS]SVN should be installed in /Applications/Xcode.app/Contents/Developer/usr/bin/svn
+			
+	Apache & PHP
+	
+		a. Make a backup of the httpd.conf
+		
+			sudo bash
+			cd /etc/apache2/
+			cp httpd.conf httpd.conf-bk
+		
+		b. Edit /etc/apache2/httpd.conf  (nano /etc/apache2/httpd.conf)
+	
+			
+				Find the line:
+	
+					"#LoadModule php5_module        libexec/apache2/libphp5.so"
+			
+				And uncomment it (remove the #).
+
+
+		c. In the Sharing System Pref, 
+			
+				turn on (or if it was already on, turn off/on) Web Sharing.
+				
+			for OSx 10.9.x run in terminal
+			
+				sudo apachectl restart
+				
+				
+
+	Mysql
+		a. Download and install the latest MySQL version from mysql.com. 
+		
+				http://dev.mysql.com/downloads/mysql/
+		
+			Choose the x86_64 version for Intel, otherwise the 32 bit x86 version (Depending on your Mac hardware).
+
+				for OSx 10.9.x download 10.7
+			
+					 "Mac OS X ver. 10.7 (x86, 64-bit)", DMG Archive
+					 	// 64bit
+					 	http://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.16-osx10.7-x86_64.dmg     <--- Quick download link for 64bit
+					 	
+					 	//32 bit
+					 	http://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.16-osx10.7-x86.dmg		<-- Quick download link for 32bit
+
+		b. Install all the MySQL components. 
+			
+			Double clikc the dmg file
+			
+
+			Then click install the following
+				mysql5.6.xxx.pkg
+				MySQLstartupitem.pkg
+				MySQLPrefPane
+	
+			
+				// NOTE: To override appstore security: You may need to press hold CTRL, click icon and then choose 'Open')
+				
+				
+		c. Switch on MySQL Server
+		
+				Once MySQL PrefPane is installed
+				
+				Click Start server
+					
+		d. Verify installation
+		
+			/usr/local/mysql/bin/mysql 
+			
+			
+			cd ; nano .bash_profile
+			export PATH="/usr/local/mysql/bin:$PATH"
+					
+		e. Set the 'root' password
+		
+			/usr/local/mysql/bin/mysqladmin -u root password 'yourpasswordhere'        <----- Exclude single quotes
+			
+				// If you make a mistake with password you add '-pyourpasswordhere' to end of command to override.
+		
+			
+		f. Modify the php.ini file to point to the correct location of mysql.sock.   // This is for older versions of OSx 10.6 and below
+		
+			/usr/local/mysql/bin/mysqladmin variables | grep socket
+			
+			If you see "/tmp/mysql.sock"
+			
+			Then run the following:
+					sudo mkdir /var/mysql/
+					sudo ln -s /tmp/mysql.sock /var/mysql/mysql.sock
+					apachectl restart
+		
+1) Setup BURDShell virtualhost
+
+
+	a. Add the following at bottom of httpd.conf
+	
+			nano /etc/apache2/httpd.conf
+			
+			At the bottom of the file add the following
+	
+				Include /path/to/shell/vhosts/
+				e.g.
+					Include /Users/sysadmin/burdserver.dev/vhosts/*.conf
+		
+
+	b. [IF YOU INSTALLED rlwrap]
+	
+			Set up alias to shell.php for user 'sysadmin' (Or the username you wish to use)
+			//!!!IMPROTANT make sure you are 'sysadmin' and not 'root'!!!!!!
+			
+			cd ~
+			vi .bash_aliases
+				--Add the following line----
+				alias shell.php='rlwrap -a shell.php'
+				--Add the following line----		
+			:wq
+
+	c. Set up shell execution
+	
+		cd /Users/sysadmin/burdserver.dev/BURDShell/
+		chmod +x shell.php
+		
+		
+		cd /usr/local/bin/
+		sudo ln -s /Users/sysadmin/burdserver.dev/BURDShell/shell.php		
+
+	d. Set up shell os to be OSx
+	
+		cd /Users/sysadmin/burdserver.dev/BURDShell/
+		nano Config_OSx.php
+		
+			Change  $shell_user
+					$shell_folder
+					$app_folder
+					$backup_folder
+					$db_admin_pass
+		
+		
+2) Setup the 'burdserver.dev' IP address (This allows for faster interaction with server)
+
+	a. Find out IP of machine
+	
+		ifconfig
+		
+	b. Setup /etc/hosts file
+
+		sudo bash	
+		echo "172.16.171.132  burdserver.dev" >> /etc/hosts
+
+3) Hopefully you should now be able to start using the shell.
+
+4) Test BURDShell and tour of a senerio.
+
+	// Site create test
+		a. Run BURDShell in basic.dev environment	
+			shell.php basic.dev
+			
+		b. Create the website
+			site create
+				# You will see a message like 'echo "172.16.171.132  basic.dev" >> /etc/hosts'
+		c. Update your /etc/hosts file	
+		
+			sudo bash
+			echo "172.16.171.132  basic.dev" >> /etc/hosts
+
+		d. On your web browser visit http://basic.dev
+	
+	// SVN test
+		a. Run BURDShell in basic.dev environment	
+		
+			shell.php basic.dev
+			
+		b. Start svn server
+		
+			svn serve
+			
+		c. Create the SVN repo   (This will use the 
+		
+			svn create
+			svn help
+				// Copy command to checkout.
+			quit
+				// Hopefully you left shell and now at terminal prompt.
+				
+		d. Checkout project
+		
+			cd /home/sysadmin
+			mkdir Sites
+			// Now run the copied 'checkout command
+			
+		e. You should now be able check in work.
+		
+	// SVN Commit test
+	
+		a. Copy the basic site structure setup via previous step
+		
+			cd /home/sysadmin/burdserver.dev/sites/
+			cp -R basic.dev/ /home/sysadmin/Sites				<---- Sites if your working project folder
+			
+		b.  Commit the changes in SVN
+			cd /home/sysadmin/Sites/basic.dev
+			svn add *
+			svn commit
+			
+				// For pico
+					Insert text "Initial project structure"
+					<CTRL>+x
+					<RETURN>
+			
+				// For 'vi' you need to 
+						Press 'i' 
+						Insert text "Initial project structure"
+						Press 'esc'
+						Type :wq
+						<RETURN>			
+						
+						
+		c.  Enter shell and view the commit
+		
+			shell.php basic.dev
+			svn log							<---- This shows your last commit
+			svn revision 1
+					
+	// Backup test
+		a. Run BURDShell in basic.dev environment	
+		
+			shell.php basic.dev
+		
+		b. Create SVN backup
+		
+			backup svn
+		
+		c. Delete project
+		
+			svn delete
+			
+		d. Restore project
+		
+			restore svn
+			
+	// Database test
+		a. Run BURDShell in basic.dev environment	
+		
+			shell.php basic.dev
+		
+		b. Create database
+		
+			database create
+	
+		c. List the database
+		
+			database list
+			//You will need to manually DROP the database - Command not included for safety of accidental delete database.
+
+This concludes the tour of the shell :) Enjoy.
