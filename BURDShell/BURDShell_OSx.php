@@ -356,6 +356,8 @@ class BURDShell_OSx extends BURDShell_interface {
 						echo "\n\n## Checkout project ##\nsvn co svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input."/trunk ".$user_input." --username ".Config::$shell_user;
 						echo "\n\n## Export project ##\nsvn export svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input."/trunk ".$user_input." --username ".Config::$shell_user;
 						echo "\n\n## Show history ##\nsvn log svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input." --username ".Config::$shell_user." --no-auth-cache";
+						echo "\n\n## Tag release 1.0 sample ##\nsvn copy svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input."/trunk svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input."/tags/1.0 --username ".Config::$shell_user." -m \"Release 1.0\"";
+						
 						echo "\n\n## Commit changes ##\nsvn commit";
 						echo "\n\n## Show status ##\nsvn status";
 						echo "\n\n";
@@ -976,10 +978,7 @@ class BURDShell_OSx extends BURDShell_interface {
 							}
 							else
 							{
-								$this->print_line("[INFO] app '".$app_name."' is allowed.");	
-							
-								if (!$this->app_exists($app_name))
-							
+								$this->print_line("[INFO] app '".$app_name."' is allowed.");							
 									
 								$app_versions = $this->get_app_files($app_name);
 								$total_app_versions = count($app_versions);
@@ -1011,29 +1010,23 @@ class BURDShell_OSx extends BURDShell_interface {
 											//tar xzf archive.tar.gz -C /destination
 											
 											$this->print_line("[INFO] Installing '".$app_name."'...");	
-															
-											if (!$this->is_project_empty($user_input))	// If index.html exists only lets remove this otherwise it is not empty
-											{
-												$this->print_line("[ERROR] You need to make sure you have removed index.html in '".$user_input."'");			
-											}
-											else
-											{
-												// Extract contents
-											    $out_lines = array();
-											    exec("tar xzf ".Config::$app_folder."/".$app_versions[0]." --strip-components 1 -C ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);												
-											    $this->print_output($out_lines);
-											    											    
-											    // Change permission
-											    $out_lines = array();
-											    exec("chown -R ".Config::$shell_user. " ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);											   
-											    $this->print_output($out_lines);
-											    
-											    $out_lines = array();
-											    exec("chgrp -R ".Config::$shell_group. " ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);
-												$this->print_output($out_lines);
+														
+										
+											// Extract contents
+										    $out_lines = array();
+										    exec("tar xzf ".Config::$app_folder."/".$app_versions[0]." --strip-components 1 -C ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);												
+										    $this->print_output($out_lines);
+										    											    
+										    // Change permission
+										    $out_lines = array();
+										    exec("chown -R ".Config::$shell_user. " ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);											   
+										    $this->print_output($out_lines);
+										    
+										    $out_lines = array();
+										    exec("chgrp -R ".Config::$shell_group. " ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);
+											$this->print_output($out_lines);
 
-											}
-											
+										
 											// Based on app details, configure additional settings
 
 //ENHANCEMENT: Auto set up config.inc.php with 'blogfish_secret'											

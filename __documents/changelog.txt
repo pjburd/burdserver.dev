@@ -1,5 +1,10 @@
 Change log
 ==========
+v1.1.2b (2014-05-05)
+
+* Fixed command 'app install' for OSx
+* Updated command 'svn help' - Tag release 1.0 sample command
+
 v1.1.1b (2014-05-05)
 
 * Fixed command 'app install' PHP warning messages

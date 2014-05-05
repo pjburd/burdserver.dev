@@ -3,24 +3,29 @@
 Future enhancements
 ===================
 
-Release 1.1b
-============
-[DONE]Tidied up config files
-[DONE]Added missing .gitignore to repo (Verify this works)
-[DONE]Added 'shell_admin_check' config for security safety.
-[DONE]Added websvn app installation support (http://www.websvn.info/)
- 			(If config location for 'svn' folder exists, it will auto setup the parentPath in config)
-[DONE]Added command 'shell os' - This will print out the 
-[DONE]Added 'site help' command to assist with /etc/hosts reactivation of sites
-[DONE]Improved 'app install' command - Removes 'index.html' if it exists to make installation a hint smoother
-[DONE]Improved 'site create' and 'site delete' command output info
-[DONE]Improved native installation documentation for OSx
-[DONE]Corrected chgrp call to use 'Config::$shell_group'
-[DONE]Updated 'svn security' to use 'Config:$shell_user' and 'sed' calls now makes .bk files
-[DONE]Added README.md from github
+Next release 1.2b
+==================
+[DONE]Update command 'svn help' - Added 'tag sample command'
+
 
 Next release thoughts
 ======================
+Add comment 'svn tag [revision number]' and 'svn list tags'
+
+svn copy svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input."/trunk svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input."/tags/1.0 --username ".Config::$shell_user
+
+
+svn copy svn://"project/trunk \
+    	  http://svn.example.com/project/tags/1.0 -m "Release 1.0"
+
+
+
+	svn copy http://svn.example.com/project/trunk \
+    	  http://svn.example.com/project/tags/1.0 -m "Release 1.0"
+    	  
+    Further info
+	    http://stackoverflow.com/questions/851377/how-to-properly-create-a-svn-tag-from-trunk
+
 Tidy up comments in shell
 Add further documentation
 Tidy up documentation
