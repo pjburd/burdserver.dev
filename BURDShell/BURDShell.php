@@ -28,7 +28,7 @@ class BURDShell
 	/*
 	 * @var	object	Version number for shell
 	 */
-	 private $shell_version = '1.1.2b';
+	 private $shell_version = '1.1.3b';
 	 
 	/*
 	 * @var	object	Instant of shell os type

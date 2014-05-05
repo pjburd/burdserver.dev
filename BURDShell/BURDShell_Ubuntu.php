@@ -909,7 +909,8 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 //!ENHANCEMENT: Convert these series of 'site' if check questions to a common function that returns a an array of errors.
 
 		$user_input = $this->project_prompt("What is the site domain?");
-
+		$out_lines = array();
+		
 		if (empty($user_input)) 
 		{
 			$this->print_line("[ERROR] site domain name missing.");	
@@ -993,16 +994,22 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 
 											
 											$this->print_line("[INFO] Installing '".$app_name."'...");	
-												
-											// Extract contents
-										    exec("tar xzf ".Config::$app_folder."/".$app_versions[0]." --strip-components 1 -C ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);												
-										    
-										    // Change permission
-										    exec("chown -R ".Config::$shell_user. " ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);
-										    exec("chgrp -R ".Config::$shell_group. " ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);
-										    
-
-										
+													
+											if (!$this->is_project_empty($user_input))	// If index.html exists only lets remove this otherwise it is not empty
+											{
+												$this->print_line("[ERROR] You need to make sure you have removed index.html in '".$user_input."'");			
+											}
+											else
+											{
+												// Extract contents
+											    exec("tar xzf ".Config::$app_folder."/".$app_versions[0]." --strip-components 1 -C ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);												
+											    
+											    // Change permission
+											    exec("chown -R ".Config::$shell_user. " ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);
+											    exec("chgrp -R ".Config::$shell_group. " ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);
+											    
+											}
+											
 											// Based on app details, configure additional settings
 
 //ENHANCEMENT: Auto set up config.inc.php with 'blogfish_secret'											

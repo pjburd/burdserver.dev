@@ -925,6 +925,7 @@ class BURDShell_OSx extends BURDShell_interface {
 //!ENHANCEMENT: Convert these series of 'site' if check questions to a common function that returns a an array of errors.
 
 		$user_input = $this->project_prompt("What is the site domain?");
+		$out_lines = array();
 
 		if (empty($user_input)) 
 		{
@@ -1010,23 +1011,29 @@ class BURDShell_OSx extends BURDShell_interface {
 											//tar xzf archive.tar.gz -C /destination
 											
 											$this->print_line("[INFO] Installing '".$app_name."'...");	
-														
-										
-											// Extract contents
-										    $out_lines = array();
-										    exec("tar xzf ".Config::$app_folder."/".$app_versions[0]." --strip-components 1 -C ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);												
-										    $this->print_output($out_lines);
-										    											    
-										    // Change permission
-										    $out_lines = array();
-										    exec("chown -R ".Config::$shell_user. " ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);											   
-										    $this->print_output($out_lines);
-										    
-										    $out_lines = array();
-										    exec("chgrp -R ".Config::$shell_group. " ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);
-											$this->print_output($out_lines);
+															
+											if (!$this->is_project_empty($user_input))	// If index.html exists only lets remove this otherwise it is not empty
+											{
+												$this->print_line("[ERROR] You need to make sure you have removed index.html in '".$user_input."'");			
+											}
+											else
+											{
+												// Extract contents
+											    $out_lines = array();
+											    exec("tar xzf ".Config::$app_folder."/".$app_versions[0]." --strip-components 1 -C ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);												
+											    $this->print_output($out_lines);
+											    											    
+											    // Change permission
+											    $out_lines = array();
+											    exec("chown -R ".Config::$shell_user. " ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);											   
+											    $this->print_output($out_lines);
+											    
+											    $out_lines = array();
+											    exec("chgrp -R ".Config::$shell_group. " ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);
+												$this->print_output($out_lines);
 
-										
+											}
+											
 											// Based on app details, configure additional settings
 
 //ENHANCEMENT: Auto set up config.inc.php with 'blogfish_secret'											

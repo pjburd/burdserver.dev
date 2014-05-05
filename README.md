@@ -3,7 +3,7 @@ BURDShell
 
 Developer platform shell.
 
-Current release v1.1.2b is beta (Fully functional with known issues)
+Current release v1.1.3b is beta (Fully functional with known issues)
 
 Demo of BURDShell in action: http://youtu.be/GDZrOs3kFmc
 

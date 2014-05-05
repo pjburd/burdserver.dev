@@ -493,39 +493,42 @@ abstract class BURDShell_interface {
 		
 		// Check to see if index.html exist in project
 	
-		
-			// Count entries in project folder
-			if ($handle = opendir(Config::$shell_folder."/sites/".$project."/public/"))
+		// Count entries in project folder
+		if ($handle = opendir(Config::$shell_folder."/sites/".$project."/public/"))
+		{
+
+			while (false !== ($entry = readdir($handle))) 
 			{
-				
-				while (false !== ($entry = readdir($handle))) 
+				if ($entry != "." && $entry != "..")
 				{
-					if ($entry != "." && $entry != "..")
+					$ctr++;
+					if ($entry == 'index.html')
 					{
-						$ctr++;
-						if ($entry == 'index.html')
-						{
-							$found_index_file = TRUE;
-						}
+						$found_index_file = TRUE;
 					}
 				}
-				closedir($handle);
 			}
+			closedir($handle);
+		}
+
+		if ($ctr == 1 && $found_index_file == TRUE)   // If only one file then it means, it is safe to delete index.html file
+		{
+
+			//Attempt to delete the index.html file
+			unlink(Config::$shell_folder."/sites/".$project."/public/index.html");
+
+		}
+		
+		
+		if (!file_exists(Config::$shell_folder."/sites/".$project."/public/index.html"))
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
 			
-			if ($ctr == 1 && $found_index_file == TRUE)   // If only one file then it means, it is safe to delete index.html file
-			{
-				if (unlink(Config::$shell_folder."/sites/".$project."/public/index.html"))
-				{
-					return TRUE;
-				}
-			}
-			
-			if ($ctr == 0 && $found_index_file == FALSE)   // If no files found then its empty
-			{
-				return TRUE;
-			}
-			
-			return FALSE; // Obveriosuly not empty
 	}
 
 	/*

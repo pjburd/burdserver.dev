@@ -1,5 +1,9 @@
 Change log
 ==========
+v1.1.3b (2014-05-05)
+
+* Fixed command 'app install' for both Ubuntu and OSx (Corrected invalid false return on is_project_empty() )
+
 v1.1.2b (2014-05-05)
 
 * Fixed command 'app install' for OSx
