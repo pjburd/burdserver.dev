@@ -116,6 +116,51 @@ class BURDShell_OSx extends BURDShell_interface {
 	    exec("sudo ls -l " . Config::$virtualhost_dir, $out_lines);	    
 		$this->print_output($out_lines);	 		
 	}
+
+	public function site_help()
+	{		
+		$user_input = $this->project_prompt("What is the site domain?");
+
+		if (empty($user_input)) 
+		{
+			$this->print_line("[ERROR] site domain name missing.");	
+		} 
+		else 
+		{
+
+			$this->print_line("Validating site...");
+			
+			if (!$this->valid_filename($user_input)) 
+			{
+				$this->print_line("[ERROR] The file name can only contain \"a-z\", \"0-9\", \".\" and \"-\" and must be lower case");
+			}
+			else
+			{
+				if (in_array($user_input, array("localhost","default","default-ssl"))) 
+				{
+					$this->print_line("[ERROR] You cannot use '".$user_input."', this is a default web server virtualhost.");
+				} 
+				else 
+				{
+				
+					//Make sure the file exists
+					if (!file_exists( Config::$virtualhost_dir.$user_input.".conf")) 
+					{
+						$this->print_line("[ERROR] site domain '".$user_input."' does not exist.");			
+					}
+					else
+					{						
+						echo "#############\n";
+						echo "# site help #\n";
+						echo "#############\n";		
+						$this->print_line("echo \"".$this->get_ip_address()."  ".$user_input."\" >> /etc/hosts");
+						$this->print_line("OR");
+						$this->print_line("echo \"127.0.0.1  ".$user_input."\" >> /etc/hosts");
+					}
+				}
+			}
+		}
+	}
 	
 	public function site_delete()
 	{		
@@ -920,7 +965,7 @@ class BURDShell_OSx extends BURDShell_interface {
 							}
 							else
 							{					
-								echo "Which app do you wish to install? (Currently only 'phpMyAdmin')\n";
+								echo "Which app do you wish to install? (Currently only 'phpMyAdmin' and 'websvn')\n";
 								$app_name = trim(fgets(STDIN));	
 							}
 							
@@ -963,8 +1008,8 @@ class BURDShell_OSx extends BURDShell_interface {
 											//tar xzf archive.tar.gz -C /destination
 											
 											$this->print_line("[INFO] Installing '".$app_name."'...");	
-													
-											if (file_exists(Config::$shell_folder."/sites/".$user_input."/public/index.html"))
+															
+											if (!$this->is_project_empty($user_input))	// If index.html exists only lets remove this otherwise it is not empty
 											{
 												$this->print_line("[ERROR] You need to make sure you have removed index.html in '".$user_input."'");			
 											}
@@ -987,17 +1032,44 @@ class BURDShell_OSx extends BURDShell_interface {
 											}
 											
 											// Based on app details, configure additional settings
-/*
+
 //ENHANCEMENT: Auto set up config.inc.php with 'blogfish_secret'											
 											switch ($app_name)
 											{
+												/*
 												case "phpMyAdmin":
 													// Set 'blowfish_secret'
 													$random_string = $this->random_string(32);
 													exec("cp ".Config::$shell_folder."/sites/".$user_input."/public/config.sample.inc.php ", $out_lines);
 													break;
+												*/
+												case "websvn":
+													// Copy include/distconfig.php to include/config.php
+													if (!file_exists(Config::$shell_folder."/sites/".$user_input."/public/include/config.php") && 
+														 file_exists(Config::$shell_folder."/sites/".$user_input."/public/include/distconfig.php") &&
+														 file_exists(Config::$shell_folder.'/svn/'))
+													{
+														
+														$tmp_file = Config::$shell_folder."/sites/".$user_input."/public/include/distconfig.php";
+														$new_file = Config::$shell_folder."/sites/".$user_input."/public/include/config.php";
+														exec("cp ".$tmp_file ." " . $new_file, $out_lines);
+													
+														if (is_writable($new_file)) {
+															$fp=fopen($new_file,"a");
+														    fwrite($fp,'$config->parentPath("'.Config::$shell_folder.'/svn/");');														
+															$this->print_line("[INFO] App '".$app_name."' : Created config file and set parentPath to '".Config::$shell_folder."/svn/'");			
+														    
+														    fclose($fp);
+														}
+
+    														
+														exec("chown ".Config::$shell_user. " ".$new_file, $out_lines);
+														exec("chgrp ".Config::$shell_group. " ".$new_file, $out_lines);
+
+													}
+													break;													
 											}
-*/											
+										
 											$this->print_line("[INFO] App '".$app_name."' installed in '".$user_input."'");			
 
 										}

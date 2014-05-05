@@ -1,0 +1,33 @@
+Change log
+==========
+
+v1.1b
+
+* Tidied up config files
+* Added missing .gitignore to repo (Verify this works)
+* Added 'shell_admin_check' config for security safety.
+* Added 'websvn' app installation support (http://www.websvn.info/)
+ 			(If config location for 'svn' folder exists, it will auto setup the parentPath in config)
+* Added command 'shell os' - This will print out the current OS version the BURDShell module is using
+* Added command 'site help' command to assist with /etc/hosts reactivation of sites
+* Improved command 'app install' - Removes 'index.html' if it exists to make installation a hint smoother
+* Improved command 'site create' and 'site delete' show nicer output info
+* Improved native installation documentation for OSx
+* Corrected chgrp call to use 'Config::$shell_group'
+* Updated 'svn security' to use 'Config:$shell_user' and 'sed' calls now makes .bk files
+* Added README.md from github
+
+v1.0b (2014-03-01)
+
+* Installs natively and virtually with Ubuntu (12.04 LTS desktop / server)
+* Installs natively on OSx (10.9.2)
+* Site management commands
+* Web server management commands
+* svn commands to help create repos and view log revisions
+* Installable apps (Currently only 'phpMyAdmin')
+* Network interface switching (For virtual machines - Experimental)
+* database commands
+* Backup commands for SVN repos and databases
+* Restore commands for SVN repos and databases
+* Shell project switching from within BURDShell and outside (shell.php [projectname])
+* Support documentation

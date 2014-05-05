@@ -478,7 +478,55 @@ abstract class BURDShell_interface {
 		}
 		return $user_input;
 	}
+
+	/*
+	 * Check is only index.html is in the only file in project folder
+	 *
+	 *@access	public	
+	 *@param	string	Project to check
+	 *@return	boolean
+	*/
+	public function is_project_empty($project)
+	{	
+		$ctr = 0;
+		$found_index_file = FALSE;
+		
+		// Check to see if index.html exist in project
 	
+		
+			// Count entries in project folder
+			if ($handle = opendir(Config::$shell_folder."/sites/".$project."/public/"))
+			{
+				
+				while (false !== ($entry = readdir($handle))) 
+				{
+					if ($entry != "." && $entry != "..")
+					{
+						$ctr++;
+						if ($entry == 'index.html')
+						{
+							$found_index_file = TRUE;
+						}
+					}
+				}
+				closedir($handle);
+			}
+			
+			if ($ctr == 1 && $found_index_file == TRUE)   // If only one file then it means, it is safe to delete index.html file
+			{
+				if (unlink(Config::$shell_folder."/sites/".$project."/public/index.html"))
+				{
+					return TRUE;
+				}
+			}
+			
+			if ($ctr == 0 && $found_index_file == FALSE)   // If no files found then its empty
+			{
+				return TRUE;
+			}
+			
+			return FALSE; // Obveriosuly not empty
+	}
 
 	/*
 	 * Verify app is a known installable app.
@@ -492,6 +540,7 @@ abstract class BURDShell_interface {
 		switch($app_name)
 		{
 			case "phpMyAdmin": return TRUE; break;
+			case "websvn": return TRUE; break;
 			default:
 				return FALSE;
 				break;
@@ -538,7 +587,13 @@ abstract class BURDShell_interface {
 		{
 			case "phpMyAdmin":
 				// Find files 
-					if (file_exists(Config::$shell_folder."/sites/".$project."/public/"."LICENSE"))
+					if (file_exists(Config::$shell_folder."/sites/".$project."/public/"."phpmyadmin.css.php"))
+					{
+						return TRUE;
+					}
+			case "websvn":
+				// Find files 
+					if (file_exists(Config::$shell_folder."/sites/".$project."/public/include/"."distconfig.php"))
 					{
 						return TRUE;
 					}

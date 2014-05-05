@@ -3,6 +3,107 @@
 Future enhancements
 ===================
 
+Release 1.1b
+============
+[DONE]Tidied up config files
+[DONE]Added missing .gitignore to repo (Verify this works)
+[DONE]Added 'shell_admin_check' config for security safety.
+[DONE]Added websvn app installation support (http://www.websvn.info/)
+ 			(If config location for 'svn' folder exists, it will auto setup the parentPath in config)
+[DONE]Added command 'shell os' - This will print out the 
+[DONE]Added 'site help' command to assist with /etc/hosts reactivation of sites
+[DONE]Improved 'app install' command - Removes 'index.html' if it exists to make installation a hint smoother
+[DONE]Improved 'site create' and 'site delete' command output info
+[DONE]Improved native installation documentation for OSx
+[DONE]Corrected chgrp call to use 'Config::$shell_group'
+[DONE]Updated 'svn security' to use 'Config:$shell_user' and 'sed' calls now makes .bk files
+[DONE]Added README.md from github
+
+Next release thoughts
+======================
+Tidy up comments in shell
+Add further documentation
+Tidy up documentation
+Add wordpress app installation support
+All in one 'site create' command (Host details is added into /etc/hosts, db created and web server virtual host setup)
+Hide password when sudo is requested or 'Force sudo bash'
+'svn user' command (To add and delete svn users)
+Add assistance text to explain to 'change config' if user or folder does not exist
+Add installation assistence text to explain whch missing basic packages still need to be installed (e.g. svn, php5, apache2) 
+Improve 'package identification' currently phpMyAdmin is identified by only a LICENSE.txt file
+Modulalize commands e.g. 'svn' to be loadable 
+	- Each module will have it's own error handling checking rather than per "Operating system" module (Reducing the amount of error handling)
+
+
+
+Security
+=========
+[For now - there is a config switch]
+
+Use sudo -n to prevent commands being run.
+
+OR 
+
+maybe die the shell if 'root' password not set
+
+OR 
+
+Request user to sudo bash once via a wrapper?
+
+OR 
+Try and impliment this
+
+function get_password($prompt)
+{
+   $ostty = `stty -g`;
+   system(
+           "stty -echo -icanon min 1 time 0 2>/dev/null || " .
+           "stty -echo cbreak"
+           );
+
+   echo "$prompt: ";
+
+   // Get rid of newline when reading stdin
+   $r = substr(fgets(STDIN), 0, -1);
+
+   echo "\n";
+   system ("stty $ostty");
+
+   return $r;
+}
+
+$p = get_password("Password");
+echo "Pasword entered: $p\n";
+
+
+
+OR
+	//!!!! THIS EXAMPLE CURRENTLY DOES NOT WORK !!!!!!!!  But something along the lines with changing colora via TTY protocol
+	public function webserver_status() 
+	{
+	    exec("stty -echo -icanon min 1 time 0 2>/dev/null || " .
+           "stty -echo cbreak"  . 
+           " && sudo service apache2 status", $out_lines);	    
+		$this->print_output($out_lines);	 		
+	}
+
+
+Update commands
+===============
+
+"site create"
+--------------
+No interaction creation.
+
+Add a config option BOOLEAN option for 'auto_site_create' and set when TRUE
+		This means create site 
+		Also echo into /etc/hosts in advance  : As the command is 'sudo bashed'   :::: Make sure user has set root password
+		Also create the database
+		
+		
+		
+
+		
 
 New Commands
 ============

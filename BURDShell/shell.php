@@ -33,12 +33,24 @@ require_once("BURDShell.php");
 require_once("BURDShell_interface.php");
 require_once("BURDShell_".Config::$shell_os.".php");
 
-//Detect project
-$project = "";
-if (is_array($argv) && isset($argv[1]))
+// ADD SUDO BASH CHECK WRAPPER around shell.php !!!!!
+
+
+
+if (isset(Config::$shell_admin_check) && Config::$shell_admin_check == TRUE && posix_getuid() != 0)
 {
-	$project = $argv[1];
+	echo "[ERROR] You must become 'root' (sudo bash) first before running BURDShell. ";
+	die;
 }
-	
-//Start shell
-$shell = new BURDShell($project, Config::$shell_os);
+else
+{
+
+	$project = "";
+	if (is_array($argv) && isset($argv[1]))		//Detect project
+	{
+		$project = $argv[1];
+	}
+		
+	//Start shell
+	$shell = new BURDShell($project, Config::$shell_os);
+}

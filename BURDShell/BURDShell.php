@@ -24,6 +24,12 @@ class BURDShell
 	 * @var	object	Instant of shown os shell system that gets initalized in construct
 	 */
 	 private $shell;
+	 
+	/*
+	 * @var	object	Version number for shell
+	 */
+	 private $shell_version = '1.1b';
+	 
 	/*
 	 * @var	object	Instant of shell os type
 	 */
@@ -51,7 +57,7 @@ class BURDShell
 			 	echo "\nGNU General Public License for more details.\n";
 			 	break;			 
 			 case 'conditions':
-			 	echo "\nRespect everyone as respect goes both ways.\n";
+			 	echo "\nYou understand that a password prompt may reveal your password.\n";
 			 	break;
 		 }
 	 }
@@ -89,11 +95,14 @@ class BURDShell
 
 			// Set working directory so not errors occur
 			chdir (Config::$shell_folder);
-			echo "[INFO] Working directory set to: ".getcwd()."\n";
+			echo "[INFO] Using config for  : ".$shell_os."\n";
+			echo "[INFO] Working directory : ".getcwd()."\n";
+			echo "[INFO] BURDShell version : ".$this->shell_version."\n";	// Print BURDShell version
 
 			// Check
 			if (posix_getuid() != 0)
 			{
+				// Should the user bypass the check for sudo bash, warn them.
 				echo "[ERROR] If you run BURDShell as non root, it can reveal passwords. TIP 'sudo bash' once.";
 			}
 
@@ -181,6 +190,7 @@ class BURDShell
 				echo "\nsite list   : List known site virtualhost configuration files";
 				echo "\nsite create : Create a new site (aka project)";
 				echo "\nsite delete : Delete a site (aka project)";
+				echo "\nsite help   : Shows helpful echo commands for re-enabling site in hosts file";
 		        echo "\n";
 	    		break;
 	    	case "app":
@@ -230,7 +240,7 @@ class BURDShell
 				echo "\nshell debugoff : Switch off shell debug";
 				echo "\nshell config   : Show config settings";
 				echo "\nshell project  : Set the desired project to work with.";
-				echo "\nshell version  : Print version of current shell in use";
+				echo "\nshell os       : Print current operating system module in use";
 				echo "\nshell w	       : Show warranty information";
 				echo "\nshell c	       : Show conditions of use information";
 		        echo "\n";
@@ -304,14 +314,14 @@ class BURDShell
 					    	break;
 		
 						//Basic commands
-						case "shell version":
-							$this->shell->print_line($this->shell->os_version);
+						case "shell os":
+							$this->shell->print_line($this->shell->os_version);  // Print version of OS module
 							break;						
 						case "shell project":
 							$this->shell->set_project();
 							break;
 						case "version":
-							$this->shell->print_line(Config::$shell_version);
+							$this->shell->print_line($this->shell_version);	// Print BURDShell version
 							break;					
 				
 						//Shell debug commands

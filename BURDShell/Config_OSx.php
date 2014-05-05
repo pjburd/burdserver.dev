@@ -19,34 +19,47 @@
 */
 							
 class Config {
-	public static $shell_os = 'OSx';		// Currently only 'Ubuntu' or 'OSx' avialable.
 
-	public static $virtual_machine = FALSE;		// If TRUE then network switching commands are enabled 'network static' and 'network dynamic'
+	/******************
+	 * Shell settings *
+	 ******************/   
+	 
+	public static $shell_os = 'OSx';					 // Currently only 'Ubuntu' or 'OSx' avialable.
 
-    public static $shell_host_domain = 'burdserver.dev';	// Helps with spitting out helpful info and calling servers
-    public static $shell_user = 'sysadmin';					// Main shell user that has 'root' priviledges.  This is the SVN user also    
-    public static $shell_group = 'staff';					// Main shell user's group priviledge
-    public static $shell_pass = 'Password1';				// This is for SVN password.
-    
-    public static $shell_folder = '/Users/sysadmin/burdserver.dev';		// Location to shell files and folders. Don't include leading forward slash.
-        
-    public static $app_folder = '/Users/sysadmin/burdserver.dev/BURDShell/apps'; // App folder location. Don't include leading forward slash.  
-    public static $backup_folder = '/Users/sysadmin/burdserver.dev/backups';	    // Backup folder location. Don't include leading forward slash.
+    public static $shell_host_domain = 'burdserver.dev'; // Helps with spitting out helpful info and calling servers
+    public static $shell_user = 'sysadmin';			  	 // Main shell user that has 'root' priviledges.  This is the SVN user also    
+    public static $shell_group = 'staff';				 // Main shell user's group priviledge
+    public static $shell_pass = 'Password1';			 // This is for SVN password.
 
-	public static $svn_bin_path = '/usr/bin/';	// Must include forward slash
-	public static $mysql_bin_path = '/usr/local/mysql/bin/';	// Must include forward slash	
-
-
-	public static $virtualhost_dir = '/Users/sysadmin/burdserver.dev/vhosts/';
-
-	public static $network_interface = 'en0';
-
-	public static $database_on = FALSE;		// If TRUE then database commands is allowed.   If enabled, then you neet set your db admin pass
-
-    public static $db_admin_pass = '';   // Database user password
-
-	public static $shell_version = '1.0b';
+	public static $shell_admin_check = TRUE;					 // If TRUE, then check user has sudo bash'd before allowing shell prompt
 	
-	public static $debug = FALSE;	// Shell debug.  Verbose commadns, and all main commands are disabled other than help.
+	public static $debug = FALSE;						 // Shell debug.  Verbose commadns, and all main commands are disabled other than help.
+
+	/*************
+	 * locations *
+	 *************/    
+    public static $shell_folder = '/Users/sysadmin/burdserver.dev';				 // Location to shell files and folders. Don't include leading forward slash.        
+    public static $app_folder = '/Users/sysadmin/burdserver.dev/BURDShell/apps'; // App folder location. Don't include leading forward slash.  
+    public static $backup_folder = '/Users/sysadmin/burdserver.dev/backups';	 // Backup folder location. Don't include leading forward slash.
+
+	public static $virtualhost_dir = '/Users/sysadmin/burdserver.dev/vhosts/'; 	// Must include forward slash
+
+	public static $svn_bin_path = '/usr/bin/';									 // Must include forward slash
+	public static $mysql_bin_path = '/usr/local/mysql/bin/';					 // Must include forward slash	
+
+
+	/*******************
+	 * Network support *
+	 *******************/
+	public static $virtual_machine = FALSE;		// If TRUE then network switching commands are enabled 'network static' and 'network dynamic'	 
+	public static $network_interface = 'en0';	// Primary network device
+
+
+	/********************
+	 * Database support *
+	 ********************/
+	public static $database_on = FALSE;		// If TRUE then database commands is allowed.   If enabled, then you neet set your db admin pass
+    public static $db_admin_pass = '';   	// Database user password
+
 
 }

@@ -19,28 +19,40 @@
 */
 							
 class Config {
-	public static $shell_os = 'Ubuntu';		// Currently only 'Ubuntu' avialable.
 
-	public static $virtual_machine = FALSE;		// If TRUE then network switching commands are enabled 'network static' and 'network dynamic'
-
+	/******************
+	 * Shell settings *
+	 ******************/   
+	public static $shell_os = 'Ubuntu';						// Shell environment.  Currently either 'Ubuntu' or 'OSx'
+	
     public static $shell_host_domain = 'burdserver.dev';	// Helps with spitting out helpful info and calling servers
     public static $shell_user = 'sysadmin';					// Main shell user that has 'root' priviledges.  This is the SVN user also    
-    public static $shell_group = 'sysadmin';					// Main shell user's group priviledge
+    public static $shell_group = 'sysadmin';				// Main shell user's group priviledge
     public static $shell_pass = 'Password1';				// This is for SVN password.
-    
-    public static $shell_folder = '/home/sysadmin/burdserver.dev';		// Location to shell files and folders. Don't include leading forward slash.
-        
+
+	public static $shell_admin_check = TRUE;						// If TRUE, then check user has sudo bash'd before allowing shell prompt
+	
+	public static $debug = FALSE;							// Shell debug.  Verbose commadns, and all main commands are disabled other than help.
+
+	/*************
+	 * locations *
+	 *************/    
+    public static $shell_folder = '/home/sysadmin/burdserver.dev';				// Location to shell files and folders. Don't include leading forward slash.        
     public static $app_folder = '/home/sysadmin/burdserver.dev/BURDShell/apps'; // App folder location. Don't include leading forward slash.  
     public static $backup_folder = '/home/sysadmin/burdserver.dev/backups';	    // Backup folder location. Don't include leading forward slash.
+    
+	public static $virtualhost_dir = '/etc/apache2/sites-available/';
+	/*******************
+	 * Network support *
+	 *******************/
+	public static $virtual_machine = FALSE;		// If TRUE then network switching commands are enabled 'network static' and 'network dynamic'	 
+	public static $network_interface = 'eth0';	// Primary network device
 
-	public static $network_interface = 'eth0';
-
-	public static $database_on = FALSE;		// If TRUE then database commands is allowed.   If enabled, then you neet set your db admin pass
-
+	/********************
+	 * Database support *
+	 ********************/
+	public static $database_on = FALSE;			  // If TRUE then database commands is allowed.   If enabled, then you neet set your db admin pass
     public static $db_admin_pass = 'Password1';   // Database user password
 
-	public static $shell_version = '1.0b';
-	
-	public static $debug = FALSE;	// Shell debug.  Verbose commadns, and all main commands are disabled other than help.
 
 }
