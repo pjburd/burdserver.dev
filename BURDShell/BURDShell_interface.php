@@ -537,13 +537,76 @@ abstract class BURDShell_interface {
 	*/
 	public function allowed_app($app_name)
 	{
+		$allowed = FALSE;
+	
 		switch($app_name)
 		{
-			case "phpMyAdmin": return TRUE; break;
-			case "websvn": return TRUE; break;
+			case "phpMyAdmin": $allowed = TRUE; break;
+			case "websvn": $allowed = TRUE; break;
 			default:
-				return FALSE;
+				$allowed = FALSE;
 				break;
+		}
+		
+		if ($allowed)
+		{
+			if (!$this->app_exists($app_name))
+			{
+				return FALSE;
+			}
+			else
+			{
+				return TRUE;
+			}
+		}
+	}
+
+	/*
+	 * Added functionality to check if an APP file exists as in many versions
+	 *
+	 *@access	public	
+	 *@param	string	App to verify
+	 *@return	boolean
+	*/
+	public function app_exists($app_name)
+	{
+		$ctr = 0;
+		$out_string = "";
+		
+		if ($handle = opendir(Config::$app_folder)) 
+		{
+		// Find which software to install
+			while (false !== ($entry = readdir($handle))) 
+			{
+				if (preg_match("/".quotemeta($app_name)."/", $entry))
+				{
+					$ctr++;
+					$out_string .= $entry."\n";
+				}
+			}
+		}
+		
+		
+		if ($ctr == 1)
+		{
+			return TRUE;
+		}
+		elseif ($ctr > 1) 
+		{
+			$this->print_line("[ERROR] Too many apps found for : '".$app_name."'.");	
+			$this->print_line("[TIP] Browse to ".Config::$app_folder." And make sure there is only one '".$app_name."'");
+
+			echo $out_string."\n";
+		
+			return FALSE;
+		}
+		elseif ($ctr == 0) 
+		{
+			$this->print_line("[ERROR] App not found : '".$app_name."'");
+			$this->print_line("[TIP] Download latest .tar.gz version and copy it into ".Config::$app_folder." folder.");
+
+			return FALSE;
+
 		}
 	}
 

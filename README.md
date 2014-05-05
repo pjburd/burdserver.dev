@@ -1,19 +1,13 @@
 BURDShell
 =========
 
-Developer platform shell.  
+Developer platform shell.
 
-Current release v1.0b is beta (Fully functional with known issues)
-
-Demo of BURDShell in action: http://youtu.be/GDZrOs3kFmc
-
-Current release v1.1b is beta (Fully functional with known issues)
+Current release v1.1.1b is beta (Fully functional with known issues)
 
 Demo of BURDShell in action: http://youtu.be/GDZrOs3kFmc
 
 Please read __documents/readme.txt for further information.
-
-Blog announcement: http://pjburd.blogspot.co.uk/2014/03/burdshell-developer-platform-shell-v10b.html
 
 
 Blog announcement: http://pjburd.blogspot.co.uk/2014/03/burdshell-developer-platform-shell-v10b.html

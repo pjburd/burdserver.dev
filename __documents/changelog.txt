@@ -1,7 +1,10 @@
 Change log
 ==========
+v1.1.1b (2014-05-05)
 
-v1.1b
+* Fixed command 'app install' PHP warning messages
+
+v1.1b (2014-05-05)
 
 * Tidied up config files
 * Added missing .gitignore to repo (Verify this works)

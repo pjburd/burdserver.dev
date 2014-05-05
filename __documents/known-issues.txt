@@ -1,0 +1,24 @@
+Known issues
+============
+
+Key
+---
+[CMD]: Shell command based
+[SECURITY]: Security risk issue
+[WARNING]: Functions yet warnings are produced
+
+Issues
+------
+[CMD][WARNING]
+Running shell with Config::$db_admin_pass set produces the following error message
+
+	Warning: Using a password on the command line interface can be insecure.
+
+[CMD][SECURITY]
+When $shell_admin_check is set to FALSE, if the user has not sudo'd bashed (Root priviledge), 
+	then it will echo their password onto scren as they type
+	
+	
+	
+	
+

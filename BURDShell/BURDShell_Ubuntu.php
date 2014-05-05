@@ -1378,7 +1378,7 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 	
 	public function _database_exists($db_name)
 	{
-		//mysql -e "SHOW DATABASES LIKE 'foo'"
+		$this->print_line("[INFO] Checking if database exists...");
 		
 	    exec("echo \"SHOW DATABASES LIKE '".$db_name."';\" | mysql -u root -p".Config::$db_admin_pass, $out_lines);	 
 

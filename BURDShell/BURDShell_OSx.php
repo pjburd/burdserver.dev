@@ -977,6 +977,9 @@ class BURDShell_OSx extends BURDShell_interface {
 							else
 							{
 								$this->print_line("[INFO] app '".$app_name."' is allowed.");	
+							
+								if (!$this->app_exists($app_name))
+							
 									
 								$app_versions = $this->get_app_files($app_name);
 								$total_app_versions = count($app_versions);
@@ -1394,7 +1397,7 @@ class BURDShell_OSx extends BURDShell_interface {
 	
 	public function _database_exists($db_name)
 	{
-		//mysql -e "SHOW DATABASES LIKE 'foo'"
+		$this->print_line("[INFO] Checking if database exists...");
 		
 	    exec("echo \"SHOW DATABASES LIKE '".$db_name."';\" | ".Config::$mysql_bin_path."mysql -u root -p".Config::$db_admin_pass, $out_lines);	 
 
