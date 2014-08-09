@@ -6,11 +6,37 @@ Future enhancements
 Next release 1.2b
 ==================
 [DONE]Update command 'svn help' - Added 'tag sample command'
-
+[DONE]Improved security, removed all 'sudo' in exec commands to prevent accidental password echos.
+[DONE]Added admin checks to commands (site create, site delete, webserver restart)
+[DONE]Enhanced environment check to include a list of WARNINGS For writeable checks to "sites", "backup" "svn" and vhosts folders
+[DONE]Enhanced comments in shell
+[DONE]Tested and documented steps to install rlwrap for OSx on Maverick
+[DONE]Enhanced security, removed 'sudo' completely from system. 
+[DONE]sites and svn can now be managed as regular user (Warnings are shown for further admin commands to run)
+[DONE]Enhanced 'svn create' so it no longer asks for another question for security setup
+[DONE]Enhanced 'svn help' to include 'create and delete' branch with the additional 'delete tag' example
 
 Next release thoughts
 ======================
-Add comment 'svn tag [revision number]' and 'svn list tags'
+
+
+Add svn branch support commands
+
+		svn create branch [branch_code_name] // Create a branch
+
+		svn list branches	// Show a list of branches
+		
+		svn help [branch_code_name] //Spits out svn commands to help export and checkout
+
+		svn delete branch [branch_code_name] // Deletes a branch 
+
+Add comment svn tag commands
+
+	'svn tag [revision number]'
+	'svn list tags'
+	
+			svnlook tree --full-paths /home/path/to/svn/project | egrep -a '/?tags/.+' | sed -re 's!.*/?tags/([^/]*).*!\1!' | sort -u
+			svnlook tree --full-paths /home/sysadmin/burdserver.dev/svn/burdserver.dev | egrep -a '/?tags/.+' | sort -u
 
 svn copy svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input."/trunk svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input."/tags/1.0 --username ".Config::$shell_user
 
@@ -26,12 +52,10 @@ svn copy svn://"project/trunk \
     Further info
 	    http://stackoverflow.com/questions/851377/how-to-properly-create-a-svn-tag-from-trunk
 
-Tidy up comments in shell
 Add further documentation
 Tidy up documentation
 Add wordpress app installation support
 All in one 'site create' command (Host details is added into /etc/hosts, db created and web server virtual host setup)
-Hide password when sudo is requested or 'Force sudo bash'
 'svn user' command (To add and delete svn users)
 Add assistance text to explain to 'change config' if user or folder does not exist
 Add installation assistence text to explain whch missing basic packages still need to be installed (e.g. svn, php5, apache2) 
@@ -40,10 +64,61 @@ Modulalize commands e.g. 'svn' to be loadable
 	- Each module will have it's own error handling checking rather than per "Operating system" module (Reducing the amount of error handling)
 
 
+Use PHP Module Readline
+=======================
+Still pondering 'http://uk1.php.net/readline' for a better solution.
+
+
+
+Coloring shell
+==============
+http://blog.lenss.nl/2012/05/adding-colors-to-php-cli-script-output/
+
+
+Black 0;30
+Blue 0;34
+Green 0;32
+Cyan 0;36
+Red 0;31
+Purple 0;35
+Brown 0;33
+Light Gray 0;37 
+Dark Gray 1;30
+Light Blue 1;34
+Light Green 1;32
+Light Cyan 1;36
+Light Red 1;31
+Light Purple 1;35
+Yellow 1;33
+White 1;37
+
+    echo "\033[31m some colored text \033[0m some white text \n";
+    echo "\033[32m some colored text \033[0m some white text \n";
 
 Security
 =========
+// NOTE: Below security thoughts are not redundant until otherwise required.
+
 [For now - there is a config switch]
+
+Investigate this library to assist with hiding password
+	http://phpseclib.sourceforge.net/
+
+		http://stackoverflow.com/questions/5652986/php-sudo-in-shell-exec
+	
+			<?php
+			include('Net/SSH2.php');
+			
+			$ssh = new Net_SSH2('www.domain.tld');
+			$ssh->login('username', 'password');
+			
+			$ssh->read('[prompt]');
+			$ssh->write("sudo command\n");
+			$ssh->read('Password:');
+			$ssh->write("Password\n");
+			echo $ssh->read('[prompt]');
+			?>
+
 
 Use sudo -n to prevent commands being run.
 

@@ -21,13 +21,9 @@ Installation
 
 This installation will assume you have basic knowledge of networking, linux, and virtual machines.
 
-
 !!!!  IMPORTANT TIPS  !!!!!
 !!!! Highly recommend !!!!!
 ===========================
-VERY IMPORTANT NOTE: Shell does not hide passwords yet!!!!!!!!!!! 
- SUDO FIRST before going further into running shell commands!!!!!!!
-
 Installing in a virtual machine enviromnemt for your own additional safety.
 
 Switching the network to private 'host-only' for additional safety of your projects you work on to begin with.
@@ -36,6 +32,12 @@ Make sure you change IP address, passwords, certificates and usernames as you se
 
 [Optional security]
 Make sure you harden your server before you switching network to public or private phsyical networking in a shared office.
+
+
+Native installation (quick)
+===========================
+1) Following 'native-install-[Desired OS].txt'. 
+
 
 
 Dedicated virtual machine installation
@@ -54,12 +56,12 @@ Currently only Ubuntu server 12.04 LTS is only available.
 3) Follow 'SHELL INSTALLATION' steps in 'shell-readme.txt'
 
 4) Take note of the foolowing
+		'virtual-install-[Desired OS].txt
 		'switching-networks.txt'
+
+
 
 Touch wood, Your envionment should be ready.
 
-Native installation (quick)
-===========================
-1) Following 'native-install-?????.txt'. 
 
 

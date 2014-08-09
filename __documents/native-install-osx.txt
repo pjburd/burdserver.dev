@@ -10,15 +10,49 @@ http://coolestguidesontheplanet.com/get-apache-mysql-php-phpmyadmin-working-osx-
 http://stackoverflow.com/questions/1293484/easiest-way-to-activate-php-and-mysql-on-mac-os-10-6-snow-leopard-10-7-lion
 
 
-
 Installation
 =============
 
 0) Set up Software
-	rlwrap [OPTIONAL NOT TESTED in OSx environment yet]   Pondering 'http://uk1.php.net/readline' for a better solution.
+	rlwrap [TESTED in OSx Maverick environment]
 	
 		// http://www.macports.org/install.php
-		// sudo port install rlwrap
+		
+			i. Install Xcode
+			
+			ii. Agree to xcode license via terminal
+					sudo xcodebuild -license
+
+			iii. Install xcode additional software (OR mac ports will fail
+					xcode-select --install
+		
+			iv. Install rlwrap
+				sudo port install rlwrap
+				
+			v. Set up alias to shell.php for user 'sysadmin' (Or the username you wish to use)
+				//!!!IMPROTANT make sure you setup for user 'sysadmin' and 'root'
+				
+				Run in terminal
+				// For 'sysadmin'
+					vi ~/.bash_profile
+						--Add the following line----
+						#BURDShell shell readline wrapper
+						alias shell.php='/opt/local/bin/rlwrap shell.php'
+						--Add the following line----		
+					:wq
+
+				// For 'root' "sudo su -"	For full shell features support e.g. restart webserver
+					sudo bash
+					
+					chmod u+w /etc/profile
+					vi /etc/profile
+						--Add the following line----
+						#BURDShell shell readline wrapper
+						alias shell.php='/opt/local/bin/rlwrap shell.php'
+						--Add the following line----		
+					:wq
+
+
 
 	SVN
 		Standard SVN

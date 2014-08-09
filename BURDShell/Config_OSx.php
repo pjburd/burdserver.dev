@@ -31,7 +31,7 @@ class Config {
     public static $shell_group = 'staff';				 // Main shell user's group priviledge
     public static $shell_pass = 'Password1';			 // This is for SVN password.
 
-	public static $shell_admin_check = TRUE;					 // If TRUE, then check user has sudo bash'd before allowing shell prompt
+	public static $shell_admin_check = FALSE;			 // If TRUE, then check user has sudo bash'd before allowing shell prompt
 	
 	public static $debug = FALSE;						 // Shell debug.  Verbose commadns, and all main commands are disabled other than help.
 
@@ -41,7 +41,6 @@ class Config {
     public static $shell_folder = '/Users/sysadmin/burdserver.dev';				 // Location to shell files and folders. Don't include leading forward slash.        
     public static $app_folder = '/Users/sysadmin/burdserver.dev/BURDShell/apps'; // App folder location. Don't include leading forward slash.  
     public static $backup_folder = '/Users/sysadmin/burdserver.dev/backups';	 // Backup folder location. Don't include leading forward slash.
-
 	public static $virtualhost_dir = '/Users/sysadmin/burdserver.dev/vhosts/'; 	// Must include forward slash
 
 	public static $svn_bin_path = '/usr/bin/';									 // Must include forward slash

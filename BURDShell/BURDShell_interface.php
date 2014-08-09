@@ -461,20 +461,24 @@ abstract class BURDShell_interface {
 	 * If $this->project is not set, prompt user a question which project to use.
 	 *
 	 *@access	public	
-	 *@param	string	The question to show the user (e.g. "Which site domain to restore repo?")
+	 *@param	string	$user_question		The question to show the user (e.g. "Which site domain to restore repo?")
+	 *@param	string	$user_input			Use this user input choice
 	 *@return	string
 	*/
-	public function project_prompt($user_question)
+	public function project_prompt($user_question, $user_input="")
 	{
-		$project = $this->get_project();
-		if ($project)
-		{
-			$user_input = $project;
-		}
-		else
-		{
-			echo $user_question . "\n";
-			$user_input = trim(fgets(STDIN));	
+		if (empty($user_input))	// Then lets ask the user which project to use
+		{		
+			$project = $this->get_project();
+			if ($project)
+			{
+				$user_input = $project;
+			}
+			else
+			{
+				echo $user_question . "\n";
+				$user_input = trim(fgets(STDIN));	
+			}
 		}
 		return $user_input;
 	}
@@ -529,6 +533,52 @@ abstract class BURDShell_interface {
 			return FALSE;
 		}
 			
+	}
+
+	/*
+	 * Executes a command if admin has sudo'ed from shell
+	 *
+	 *@access	public	
+	 *@param	string	Command to execute
+	 *@return	string
+	*/
+	public function is_admin()
+	{
+		// Check if admin enabled
+		if (posix_getuid() != 0)
+		{
+			$out_lines[] = "[INFO] You must 'sudo' before running this shell command. e.g. 'sudo shell.php'";
+			$this->print_output($out_lines);
+			return FALSE;
+		}
+		else
+		{
+			return TRUE;
+		}
+	}
+
+	/*
+	 * Executes a commadn if admin has sudo'ed from shell, otherwise the command is shown what is not allowed
+	 *
+	 *@access	public	
+	 *@param	string	Command to execute
+	 *@param	boolean	If TRUE then user must have root priviledge
+	 *@return	string
+	*/
+	public function admin_exec($cmd, $admin_required=TRUE)
+	{
+		$out_lines = array();
+
+		// Check if admin enabled
+		if ($admin_required && posix_getuid() != 0)
+		{
+			$out_lines[] = "[IMPORTANT] For changes to take affect run the following outside BURDShell: '" . $cmd . "'";
+		}
+		else
+		{
+			exec($cmd, $out_lines);    	    
+		}
+		return $out_lines;
 	}
 
 	/*

@@ -28,7 +28,7 @@ class BURDShell
 	/*
 	 * @var	object	Version number for shell
 	 */
-	 private $shell_version = '1.1.3b';
+	 private $shell_version = '1.2b';
 	 
 	/*
 	 * @var	object	Instant of shell os type
@@ -57,7 +57,7 @@ class BURDShell
 			 	echo "\nGNU General Public License for more details.\n";
 			 	break;			 
 			 case 'conditions':
-			 	echo "\nYou understand that a password prompt may reveal your password.\n";
+			 	echo "\nYou understand and respect your system environment.\n";
 			 	break;
 		 }
 	 }
@@ -89,9 +89,7 @@ class BURDShell
 	        {
 		        $this->shell->set_project($project);
 	        }
-	        
-	        //Print any shell issues
-	        $errors = $this->shell->check_shell_env($this->debug);	  
+	         
 
 			// Set working directory so not errors occur
 			chdir (Config::$shell_folder);
@@ -99,27 +97,31 @@ class BURDShell
 			echo "[INFO] Working directory : ".getcwd()."\n";
 			echo "[INFO] BURDShell version : ".$this->shell_version."\n";	// Print BURDShell version
 
-			// Check
-			if (posix_getuid() != 0)
-			{
-				// Should the user bypass the check for sudo bash, warn them.
-				echo "[ERROR] If you run BURDShell as non root, it can reveal passwords. TIP 'sudo bash' once.";
-			}
-
-				        
+	        //Print any shell issues
+	        $errors = $this->shell->check_shell_env($this->debug);	 				        
 	        if (count($errors)) 
 	        {
 		        $this->errors_found = TRUE;
-	        }
-	              
+	        }	             
+	            
 	        $this->report_error($errors);
+
+			// Find any warnings that we may need to address
+	        echo "\n";	        
+	        $warnings = $this->shell->write_check();
+	        $this->shell->print_output($warnings);
+	        if (!empty($warnings))
+	        {
+				echo "[TIP] You may need to either 'sudo' the shell command e.g. 'sudo shell.php' or check your config settings for ".$shell_os."\n";
+	        }
+	        
 	        echo "\n";
 	        
 	        $this->start_main_menu();
         } 
         else 
         {
-	        echo "[ERROR] You must set your desired host os.  Currently only 'Ubuntu'.";
+	        echo "[ERROR] You must set your desired host os.  Currently only 'Ubuntu' and 'OSx'.";
         }
         
     }
@@ -453,6 +455,44 @@ class BURDShell
 
     private function c_print($colour, $message)
     {
-//!TODO: Create colored shell lines        
+//!TODO: Create colored shell lines    
+
+/*
+
+Black 0;30
+Blue 0;34
+Green 0;32
+Cyan 0;36
+Red 0;31
+Purple 0;35
+Brown 0;33
+Light Gray 0;37 
+Dark Gray 1;30
+Light Blue 1;34
+Light Green 1;32
+Light Cyan 1;36
+Light Red 1;31
+Light Purple 1;35
+Yellow 1;33
+White 1;37
+
+Bold Background
+\e[1;30m \e[40m # black
+\e[1;31m \e[41m # red
+\e[1;32m \e[42m # green
+\e[1;33m \e[43m # yellow
+\e[1;34m \e[44m # blue
+\e[1;35m \e[45m # purple
+\e[1;36m \e[46m # cyan
+\e[1;37m \e[47m # white
+
+
+    echo "\033[31m some colored text \033[0m some white text \n";
+    echo "\033[32m some colored text \033[0m some white text \n";
+    
+    
+    NOTE: to close the color, you'll have to add \033[0m at the end of the colored output.
+*/
+    
     }
 }

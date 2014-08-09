@@ -20,11 +20,11 @@ Switching networks [*nix]
 =========================
 
 
-There is 'Bridged' for allowing the virtual machine to be visible to other machines on the physical network
+There is 'Bridged' for allowing the virtual machine to be visible to other machines on the physical network.
 	//Internet is visible
 	
-There is 'NAT' for virtual networking between virtual machine over a private network (Verify this) .
-	// Not sure if internet is visible
+There is 'NAT' for virtual networking between virtual machine over a private network.
+	// Internet is visible yet you share the /etc/host of your host machine (Ideal for testing).
 	
 There is 'Host only' is virtual networking between the host and and the machine only.
 	//Internet is currently hidden

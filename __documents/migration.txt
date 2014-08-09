@@ -1,0 +1,126 @@
+Migrate BURDSHell versions
+==========================
+Steps to migrate between specific BURDSHell versions.
+
+
+1.1.3b to 1.2b
+--------------
+[QUESTION] Why migrate with this version?
+[ ANSWER ] 1.2b is more secure and no longer dependant on 'sudo'( sudo was able to reveal root password if not careful).
+
+1)	Backup all known SVN projects managed by BURDSHell in 1.1.3b and lower
+
+	sudo shell.php
+	svn list
+	backup svn [project]
+
+
+2)	Rename old BURDSHell folder as we will be moving everything into a 'user' owned environment.  
+    [NOTE]Some folders maybe 'root' owned so we need to 'sudo bash'.
+				
+		e.g. If burdserver.dev is stored here /home/sysadmin/burdserver.dev
+		
+			sudo bash
+			cd /home/sysadmin/
+			mv burdserver.dev burdserver.dev-old
+	
+
+2)	Unpack the burdserver.dev version 1.2b into your home folder
+	[NOTE]This will be our new BURDSHell environment area.
+	
+		cd /home/sysadmin/
+		tar -xvf burdserver.dev.tar.gz
+
+	
+3)	Migrate Apache2 sites (Owned by root to be user owned)
+		[IMPORTANT] Do not 'sudo bash'.  Make sure you have exited out.
+		
+		For BURDSHell_Ubuntu			
+	
+			i) Find all sites managed under BURDSHell
+			
+				cd /etc/apache2/sites-enabled
+				ls -l *dev
+				
+				
+			ii) Disable all sites managed under BURDSHell found from step i)
+							
+				a2dissite [site.dev]
+				
+			iii) Restart webserver
+			
+				service apache2 reload
+	
+			vi) Copy all *.dev files in /etc/apache2/sites-avaiable/ into /path/to/burdserver.dev/vhosts
+	
+				cd /etc/apache2/sites-available/
+				ls -l *dev
+				!!!!!MUST END WITH .conf  e.g. testsite.dev.conf       !!!!
+				cp testsite.dev /home/sysadmin/burdserver.dev/vhosts/testsite.dev.conf
+				
+
+			v) Set up Apache2 config to use the 'vhosts' folder
+		
+				nano /etc/apache2/httpd.conf
+				
+				At the bottom of the file add the following
+		
+					Include /path/to/shell/vhosts/
+					e.g.
+						Include /home/sysadmin/burdserver.dev/vhosts/*.conf
+						
+			iv) Restart apache to use new location
+				
+					sudo service apache2 reload
+
+				
+4)		Migrate SVN projects owned by root (The only quick solution is restore each project)
+		
+		i) Copy your SVN backups into the new BURDShell v1.2b environemnt
+		
+			cp /path/to/svn/backups/* /home/sysadmin/burdserver.dev/backups
+		
+		ii) Either delete and restore OR change permissions of each each SVN project
+		
+			
+			// Permission via Bash (You may need to sudo bash before doing the command
+			sudo bash
+			chown -R sysadmin /home/sysadmin/burdserver\.dev
+			chgrp -R sysadmin /home/sysadmin/burdserver\.dev
+			exit
+
+			// Restore via BURDShell
+			shell.php
+			restore svn [project]
+			
+			
+5)		Remove old history rlwrap (As it may have been 'root' owned)
+
+			i) Verify .shell.php_history is not 'root' owned
+				cd ~/
+				ls -la .shell*
+		
+			ii) If 'root owned .shell.php_history then run the following
+				For OSx
+					sudo rm /Users/sysadmin/.shell.php_history
+		
+				For Ubuntu
+					sudo rm /home/sysadmin/.shell.php_history
+		
+								
+6)		BURDShell 1.2b should now fully owned by the user.
+
+		[NOTE]You will see see warnings of failed admin calls 
+		
+			e.g. 'restart webserver' 
+		
+				[INFO] You must 'sudo' before running this shell command. e.g. 'sudo shell.php'
+				[INFO] CMD was 'service apache2 reload'
+				
+
+			If you sudo bashed the shell then it will run fine.
+			
+		Feel more secure and happier with BURDSHell 1.2b
+
+
+

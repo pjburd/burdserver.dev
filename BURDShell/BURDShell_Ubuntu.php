@@ -23,10 +23,8 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 	public function network_dynamic() 
 	{
 		if (Config::$virtual_machine == TRUE)
-		{
-		    $out_lines[] = exec("sudo cp /etc/network/interfaces.dynamic /etc/network/interfaces");    	    
-			$this->print_output($out_lines);	 
-			   
+		{		      
+			$this->print_output($this->admin_exec("cp /etc/network/interfaces.dynamic /etc/network/interfaces"));	 			   
 		    $this->network_restart();   
 	    }
 	    else
@@ -38,10 +36,8 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 	public function network_static() 
 	{
 		if (Config::$virtual_machine == TRUE)
-		{
-		    $out_lines[] = exec("sudo cp /etc/network/interfaces.static /etc/network/interfaces");   
-			$this->print_output($out_lines);
-	 
+		{			
+			$this->print_output($this->admin_exec("cp /etc/network/interfaces.static /etc/network/interfaces"));	 			   	 
 		    $this->network_restart();   
 	    }
 	    else
@@ -56,13 +52,13 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 		$this->print_output($out_lines);
 	}
 	
+//!BUG: "restart" does not exist 
+//!TODO: Must correct networking restart as it does not exist - Need to create a sub wrapper to run "stop" and "start" seperately.  	
 	public function network_restart() {		
 		if (Config::$virtual_machine == TRUE)
 		{
 			echo "\nRestarting network:";
-			
-		    exec("sudo /etc/init.d/networking restart", $out_lines);
-			$this->print_output($out_lines);
+			$this->print_output($this->admin_exec("/etc/init.d/networking restart"));	 			   	 			
 	    }
 	    else
 	    {
@@ -72,32 +68,28 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 	}
 
 	public function get_ip_address() {
-		 $out_line = exec("/sbin/ifconfig " . Config::$network_interface . " | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'");
+		 $out_line = exec("/sbin/ifconfig " . Config::$network_interface . " | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'");		 
 		 return $out_line;
 	}
 
 	public function webserver_status() 
 	{
-	    exec("sudo service apache2 status", $out_lines);	    
-		$this->print_output($out_lines);	 		
+		$this->print_output($this->admin_exec("service apache2 status", FALSE));
 	}
 	
 	public function webserver_sites() 
 	{
-	    exec("sudo apache2ctl -S", $out_lines);	    
-		$this->print_output($out_lines);	 		
+		$this->print_output($this->admin_exec("apache2ctl -S", FALSE));	
 	}
 	
 	public function webserver_restart() 
 	{
-	    exec("sudo service apache2 restart", $out_lines);	    
-		$this->print_output($out_lines);	 		
+		$this->print_output($this->admin_exec("service apache2 restart"));
 	}
 
 	public function site_list() 
-	{
-	    exec("sudo ls -l ".Config::$virtualhost_dir, $out_lines);	    
-		$this->print_output($out_lines);	 		
+	{	
+		$this->print_output($this->admin_exec("ls -l ".Config::$virtualhost_dir, FALSE));
 	}
 
 
@@ -140,6 +132,7 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 	
 	public function site_delete()
 	{		
+		
 		$user_input = $this->project_prompt("What is the site domain?");
 
 		if (empty($user_input)) 
@@ -165,27 +158,22 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 				{
 				
 					//Make sure the file exists
-					if (!file_exists(Config::$virtualhost_dir.$user_input)) 
+					if (!file_exists( Config::$virtualhost_dir.$user_input.".conf")) 
 					{
 						$this->print_line("[ERROR] site domain '".$user_input."' does not exist.");			
 					}
 					else
 					{
-						//Disable site
-					
-						$out_lines = array();
-						exec("sudo a2dissite ".$user_input, $out_lines);	    
-						$this->print_output($out_lines);	
-						
-						$out_lines = array();
-						exec("sudo service apache2 reload", $out_lines);	    
-						$this->print_output($out_lines);	 		
-					
-						//Delete config
-						exec("sudo rm ".Config::$virtualhost_dir.$user_input, $out_lines);
-						$this->print_output($out_lines);	 		
-							
-						//reload server
+						//Delete config						
+						if (file_exists(Config::$virtualhost_dir.$user_input.".conf"))
+						{
+							$this->print_output($this->admin_exec("rm ". Config::$virtualhost_dir.$user_input.".conf", FALSE));
+						}
+
+						//Restart webserver
+	
+						$this->print_output($this->admin_exec("service apache2 reload")); //reload server
+
 						$this->print_line("[INFO] Site deleted :)");
 						$this->print_line("[IMPORTANT] Update host machine /etc/hosts file to remove redundant site.");
 						
@@ -196,8 +184,7 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 	}
 			
 	public function site_create() 
-	{	
-		
+	{			
 		$user_input = $this->project_prompt("What is the site domain?");
 	
 		if (empty($user_input)) 
@@ -225,7 +212,7 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 					//Make sure the file exists//Make sure the file exists
 					if (!file_exists( Config::$virtualhost_dir.$user_input)) 
 					{
-						$this->print_line("Creating site domain '".$user_input."'...");			
+						$this->print_line("[INFO] Creating site domain '".$user_input."'...");			
 						
 						//Read template into variable
 						$template = file_get_contents(Config::$shell_folder.'/BURDShell/templates/apache2-virtualhost.txt');
@@ -233,44 +220,39 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 						// Change template key names
 						$template = preg_replace("/\[DOMAINNAME\]/", $user_input, $template);	
 						$template = preg_replace("/\[SHELL\_FOLDER\]/", Config::$shell_folder, $template);	
-									
+															
 						// Save file
-						file_put_contents(Config::$virtualhost_dir.$user_input, $template);
+						file_put_contents( Config::$virtualhost_dir.$user_input.".conf", $template);		// Mac requires .conf at end
 						
 						// Set up default structure						
 						if (file_exists(Config::$shell_folder."/sites/".$user_input)) 
 						{
 							$this->print_line("Site folder '".$user_input."' exists");			
-
 						}
 						else
 						{
 							$this->print_line("Creating site folder '".$user_input."' scaffold...");
-							$out_lines = array();
-							exec("sudo mkdir ".Config::$shell_folder."/sites/".$user_input, $out_lines);	    
-							exec("sudo mkdir ".Config::$shell_folder."/sites/".$user_input."/public", $out_lines);	    
-							exec("sudo mkdir ".Config::$shell_folder."/sites/".$user_input."/private", $out_lines);	    
 							
+							$this->print_output($this->admin_exec("mkdir ".Config::$shell_folder."/sites/".$user_input, FALSE));
+							$this->print_output($this->admin_exec("mkdir ".Config::$shell_folder."/sites/".$user_input."/public", FALSE));
+							$this->print_output($this->admin_exec("mkdir ".Config::$shell_folder."/sites/".$user_input."/private", FALSE));
+														
 							$template = file_get_contents(Config::$shell_folder.'/BURDShell/templates/site-index-file.txt');
 							$template = preg_replace("/\[PROJECT\]/", $user_input, $template);						
 										
 							file_put_contents(Config::$shell_folder."/sites/".$user_input."/public/index.html", $template);
-							exec("sudo chown -R ".Config::$shell_user." ".Config::$shell_folder."/sites/".$user_input, $out_lines);	    
-							exec("sudo chgrp -R ".Config::$shell_group." ".Config::$shell_folder."/sites/".$user_input, $out_lines);	    
-		
+							
+							$this->print_output($this->admin_exec("chown -R ".Config::$shell_user." ".Config::$shell_folder."/sites/".$user_input, FALSE));
+							$this->print_output($this->admin_exec("chgrp -R ".Config::$shell_group." ".Config::$shell_folder."/sites/".$user_input, FALSE));
+								
 							$this->print_output($out_lines);	
 						}
 						
 
 						
 						// Enable server
-						$out_lines = array();
-						exec("sudo a2ensite ".$user_input, $out_lines);	    
-						$this->print_output($out_lines);	
-						
-						$out_lines = array();
-						exec("sudo service apache2 reload", $out_lines);	    
-						$this->print_output($out_lines);	 		
+						$this->print_output($this->admin_exec("service apache2 reload"));
+											
 
 						$this->print_line("[INFO] Site created :)");
 						$this->print_line("[IMPORTANT] Update host machine /etc/hosts file to make site available.");
@@ -295,16 +277,14 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 	}
 	
 	public function svn_list() 
-	{		 
-	    exec("sudo ls -l ".Config::$shell_folder."/svn/", $out_lines);	    
-		$this->print_output($out_lines);	 	
+	{		 				
+	    exec("ls -l ".Config::$shell_folder."/svn/", $out_lines);	    
+		$this->print_output($out_lines);		
 	}
 	
-
-
 	public function svn_help() 
 	{		 
-		$user_input = $this->project_prompt("Which site to view repo history?");
+		$user_input = $this->project_prompt("Which site to view svn help for?");
 
 		if (empty($user_input)) 
 		{
@@ -336,16 +316,17 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 						echo "############\n";
 						echo "# svn help #\n";
 						echo "############\n";
-						echo "cd /in/to/work/folder/ and then run either following:";							
+						echo "[INFO]cd /in/to/work/folder/ and then run either following:";							
 						echo "\n\n## Checkout project ##\nsvn co svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input."/trunk ".$user_input." --username ".Config::$shell_user;
 						echo "\n\n## Export project ##\nsvn export svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input."/trunk ".$user_input." --username ".Config::$shell_user;
 						echo "\n\n## Show history ##\nsvn log svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input." --username ".Config::$shell_user." --no-auth-cache";
-						echo "\n\n## Tag release 1.0 sample ##\nsvn copy svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input."/trunk svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input."/tags/1.0 --username ".Config::$shell_user." -m \"Release 1.0\"";
-
+						echo "\n\n## Tag release 1.0 sample ##\nsvn copy svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input."/trunk svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input."/tags/1.0 --username ".Config::$shell_user." -m \"Release 1.0\"";						
+						echo "\n\n## Delete tag sample ##\nsvn delete svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input."/tags/1.0 --username ".Config::$shell_user." -m \"Deleted release 1.0\"";						
+						echo "\n\n## Create branch 'prototype' sample ##\nsvn copy svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input."/trunk svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input."/branches/prototype --username ".Config::$shell_user." -m \"Created branch 'prototype'\"";						
+						echo "\n\n## Delete branch 'prototype' sample ##\nsvn delete svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input."/branches/prototype --username ".Config::$shell_user." -m \"Deleted branch 'prototype'\"";
 						echo "\n\n## Commit changes ##\nsvn commit";
 						echo "\n\n## Show status ##\nsvn status";
-						echo "\n\n";
-						
+						echo "\n\n";					
 					}
 				}
 			}
@@ -386,11 +367,12 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 					} 
 					else
 					{
-					    exec("sudo mkdir ".Config::$shell_folder."/svn/".$user_input, $out_lines);	   
+					    exec("mkdir ".Config::$shell_folder."/svn/".$user_input, $out_lines);	   
 						$this->print_output($out_lines);
 						
+						
 						//Create repo
-					    exec("sudo svnadmin create ".Config::$shell_folder."/svn/".$user_input, $out_lines);	   
+					    exec("svnadmin create ".Config::$shell_folder."/svn/".$user_input, $out_lines);	   
 						$this->print_output($out_lines);	 											     
 	
 						exec("svn mkdir -m\"Created basic directory structure\" file:///".Config::$shell_folder."/svn/".$user_input."/trunk file:///".Config::$shell_folder."/svn/".$user_input."/branches file:///".Config::$shell_folder."/svn/".$user_input."/tags", $out_lines);						
@@ -400,7 +382,7 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 	
 						$this->print_line("Site repo created.");
 						
-						$this->print_line("Checkout project:\nsvn co svn://burdserver.dev".Config::$shell_folder."/svn/".$user_input."/trunk ".$user_input." --username ".Config::$shell_user);
+						$this->print_line("Checkout project:\nsvn co svn://".Config::$shell_host_domain.Config::$shell_folder."/svn/".$user_input."/trunk ".$user_input." --username ".Config::$shell_user);
 
 					}
 					
@@ -443,7 +425,7 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 					else
 					{
 						$this->print_line("Deleting site repo...");
-					    exec("sudo rm -Rf ".Config::$shell_folder."/svn/".$user_input, $out_lines);	   
+					    exec("rm -Rf ".Config::$shell_folder."/svn/".$user_input, $out_lines);	   
 						$this->print_output($out_lines);	 
 						$this->print_line("Site repo deleted.");					
 					}
@@ -817,10 +799,9 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 		}
 	}	
 
-
-	public function svn_security()
+	public function svn_security($override_user_input="")
 	{
-		$user_input = $this->project_prompt("Which site repo to setup security?");
+		$user_input = $this->project_prompt("Which site repo to setup security?", $override_user_input);
 		
 		if (empty($user_input)) 
 		{
@@ -863,8 +844,8 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 								auth-access = write
 								password-db = passwd
 							*/
-							exec("sudo sed -i 's/^# auth\-access \= write/anon\-access \= none\\nauth\-access \= write/' ".Config::$shell_folder."/svn/".$user_input."/conf/svnserve.conf");
-							exec("sudo sed -i 's/^# password\-db \= passwd/password\-db \= passwd/' ".Config::$shell_folder."/svn/".$user_input."/conf/svnserve.conf");
+							exec("sed -i 's/^# auth\-access \= write/anon\-access \= none\\nauth\-access \= write/' ".Config::$shell_folder."/svn/".$user_input."/conf/svnserve.conf");
+							exec("sed -i 's/^# password\-db \= passwd/password\-db \= passwd/' ".Config::$shell_folder."/svn/".$user_input."/conf/svnserve.conf");
 	
 							/*
 								[/svn/PROJECTFOLDER/conf/passwd]
@@ -893,13 +874,13 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 
 	public function svn_serve() 
 	{		 
-	    exec("sudo svnserve -d", $out_lines);	    
+	    exec("svnserve -d", $out_lines);	    
 		$this->print_output($out_lines);	 	
 	}
 	
 	public function app_list()
 	{
-	    exec("sudo ls -l ".Config::$app_folder."/", $out_lines);	    
+	    exec("ls -l ".Config::$app_folder."/", $out_lines);	    
 		$this->print_output($out_lines);	 	
 
 	}
@@ -1084,7 +1065,7 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 			
 	public function backup_list() 
 	{		 
-	    exec("sudo ls -l ".Config::$backup_folder."/", $out_lines);	    
+	    exec("ls -l ".Config::$backup_folder."/", $out_lines);	    
 		$this->print_output($out_lines);	 	
 	}
 			
@@ -1217,11 +1198,11 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 					} 
 					else
 					{
-					    exec("sudo mkdir ".Config::$shell_folder."/svn/".$user_input, $out_lines);	   
+					    exec("mkdir ".Config::$shell_folder."/svn/".$user_input, $out_lines);	   
 						$this->print_output($out_lines);
 						
 						//Create repo
-					    exec("sudo svnadmin create ".Config::$shell_folder."/svn/".$user_input, $out_lines);	   
+					    exec("svnadmin create ".Config::$shell_folder."/svn/".$user_input, $out_lines);	   
 						$this->print_output($out_lines);	 											     
 	
 						exec("gunzip -c ".Config::$backup_folder."/bk_svn_".$user_input.".gz | svnadmin load ".Config::$shell_folder."/svn/".$user_input, $out_lines);
@@ -1381,17 +1362,25 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 	
 	public function _database_exists($db_name)
 	{
-		$this->print_line("[INFO] Checking if database exists...");
-		
-	    exec("echo \"SHOW DATABASES LIKE '".$db_name."';\" | mysql -u root -p".Config::$db_admin_pass, $out_lines);	 
-
-		if (is_array($out_lines) && count($out_lines) == 2)
+	
+		if (Config::$database_on)
 		{
-			return TRUE;
+			$this->print_line("[INFO] Checking if database exists...");
+			
+		    exec("echo \"SHOW DATABASES LIKE '".$db_name."';\" | mysql -u root -p".Config::$db_admin_pass, $out_lines);	 
+	
+			if (is_array($out_lines) && count($out_lines) == 2)
+			{
+				return TRUE;
+			}
+			else
+			{
+				return FALSE;
+			}
 		}
 		else
 		{
-			return FALSE;
+			return TRUE;	// We bypass the database check
 		}
 	}
 
@@ -1456,15 +1445,41 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 		}		
 	}
 */	
-	public function check_shell_env($debug=FALSE) 
+
+
+	public function write_check()
 	{
 		$errors = array();		
+
 		$files = array();
-	
+
+		// Folders that will be required to be writable
+		$files[] = Config::$virtualhost_dir; 			
+		$files[] = Config::$shell_folder."/svn/";
+		$files[] = Config::$shell_folder."/sites/";
+		$files[] = Config::$backup_folder."/";
+
+		foreach($files as $file) 
+		{
+		    if (!is_writable($file)) 
+		    {
+			    $errors[] = "[WARNING] ".$file." is not writable.";
+		    }
+	    }
+	    
+		return $errors;
+	}
+
+	public function check_shell_env($debug=FALSE) 
+	{
+
+		$errors = array();		
+		$files = array();
+		$write_chk = array();
 		
 		//System environment requirements
 		$files[] = "/etc/apache2/";
-		$files[] = Config::$virtualhost_dir;		
+		$files[] = Config::$virtualhost_dir;	
 		
 		if (Config::$virtual_machine == TRUE)
 		{
@@ -1479,17 +1494,20 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 		$files[] = Config::$shell_folder."/sites/";
 		$files[] = Config::$backup_folder."/";
 		$files[] = Config::$shell_folder."/BURDShell/apps/";
-		$files[] = Config::$shell_folder."/BURDShell/templates/";
+		$files[] = Config::$shell_folder."/BURDShell/templates/";		
 				
 		//BURDShell templates
 		$files[] = Config::$shell_folder."/BURDShell/templates/apache2-virtualhost.txt";
 		$files[] = Config::$shell_folder."/BURDShell/templates/site-index-file.txt";
+
+		
 
 		if ($debug)
 		{
 			echo "Files n folders checked are:";
 			print_r($files);
 		}
+						
 				
 		foreach($files as $file) 
 		{
@@ -1497,6 +1515,7 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 		    {
 			    $errors[] = $file." does not exist.";
 			}
+
 		}
 		if (count($errors)) 
 		{

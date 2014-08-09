@@ -1,5 +1,16 @@
 Change log
 ==========
+
+v1.2b
+* Enhanced security, removed 'sudo' from all exec commands completely (So no more scary thoughts of revealing passwords!).
+* Enhanced environment setup check to include a list of WARNINGS For writeable checks to "sites", "backup" "svn" and vhosts folders
+* BURDShell can now run fully under 'user' ownership.  
+* [IMPORTANT] tips will appear for commands that require 'root' sudo attention.
+* Updated command 'svn help' to include 'tag' and 'branch' mangement commands
+* Tested and documented steps to install rlwrap for OSx on Maverick (Now OSx can have shell history)
+* Enhanced 'svn create' so 2nd question is not asked again.
+
+
 v1.1.3b (2014-05-05)
 
 * Fixed command 'app install' for both Ubuntu and OSx (Corrected invalid false return on is_project_empty() )

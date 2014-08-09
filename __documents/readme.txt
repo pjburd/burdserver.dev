@@ -25,16 +25,25 @@ Thank you for choosing 'BURDShell' to manage your development.
 
 BURDShell is a developer platform shell to help manage your private projects in-house before going public via a command line.
 
-Once the platform shell is setup you can easily creating websites, projects, svn repos, and even backups via a command.
-via a command line.
+Once the platform shell is setup you can easily creating websites, projects, svn repos, and even backups via a command line.
 
 Usuage
 ======
 Shell works in Ubuntu and Mac
+	
+	shell.php 					: Runs the BURDShell without a project selected.  All commands will ask for your desired project.
+	
+	shell.php [project name]    : Sets up your project environment so all commands will not ask which desired project.
 
-shell.php 					: Runs the BURDShell without a project selected.  All commands will ask for your desired project.
 
-shell.php [project name]    : Sets up your project environment so all commands will not ask which desired project.
+For full shell server feature support (Some features are restricted as root is required)
+
+	1) Run the following to become 'root' user
+		sudo su -
+	2) Then run the shell command
+		shell.php
+		
+	
 
 
 Commands
@@ -59,16 +68,17 @@ Software requirements
 =====================
 The shell can function in the following OS environments:
 
-virtual on Ubuntu Server 12.04.3 LTS
-natively on Ubuntu Desktop 12.04 LTS
-natively on Mac OSx 10.9.2
+	Virtually on Ubuntu Server 12.04.3 LTS
+	Natively on Ubuntu Desktop 12.04 LTS
+	Natively on Mac OSx 10.9.2
 
 All environments require the following minimum primary software to be installed:
 
 Apache2
+PHP
 MySQL
 SVN
-rlwrap (Optional - This assists in remembering the shell commands, making development feel smoother)
+rlwrap (Optional - This assists in remembering the shell commands, making the shell feel smoother)
 
 
 Installation

@@ -21,8 +21,14 @@ BURDShell: Installation of shell only
 
 IMPORTANT
 =========
-You should only run shell commands as 'root'.
-Recommended set up is 'network static' on a 'bridged network' to begin with.
+Some commands require 'admin/root priviledge in order to run.  
+Ideally you should run the command as 'root' by either 
+
+
+'sudo shell.php'
+OR
+run shell.php once you have 'sudo bash' 
+
 
 SHELL INSTALLATION
 ==================	
@@ -130,7 +136,7 @@ Unauthorisd for SVN
 Make sure you have
 	run shell command 'svn security' for the chosen site project.
 
-Opened up port 
+Also if you have a firewall, make sure you have opened up port 3690 for SVN .
 
 You see "sh: 0: getcwd() failed: No such file or directory"
 -----------------------------------------------------------

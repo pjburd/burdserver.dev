@@ -42,7 +42,7 @@ Installation
 		cd ~
 		vi .bash_aliases
 			--Add the following line----
-			alias shell.php='rlwrap -a shell.php'
+			alias shell.php='rlwrap shell.php'
 			--Add the following line----		
 		:wq
 
@@ -85,8 +85,22 @@ Installation
 					$app_folder
 					$backup_folder
 					$db_admin_pass
+					
 
-8) Test BURDShell and tour of a senerio.
+8) Setup BURDShell virtualhost
+
+
+	a. Add the following at bottom of httpd.conf
+	
+			nano /etc/apache2/httpd.conf
+			
+			At the bottom of the file add the following
+	
+				Include /path/to/shell/vhosts/
+				e.g.
+					Include /home/sysadmin/burdserver.dev/vhosts/*.conf
+
+9) Test BURDShell and tour of a senerio.
 
 	// Site create test
 		a. Run BURDShell in basic.dev environment	
@@ -190,69 +204,3 @@ Installation
 			//You will need to manually DROP the database - Command not included for safety of accidental delete database.
 
 This concludes the tour of the shell :) Enjoy.
-
-OPTIONAL: Setup Virtual machine public broadcasting (EXPRIMENTAL)
-=================================================================
-IMPORTANT
----------
-Before going futher, please understand 'switching-networks.txt' with your virtual machine client.
-
-ABOUT
------
-BURDShell provides experimental network switching commands to allow projects to be visible to phsyical network.
-	
-	Known issues:
-			Should you change to dynamic whilst in a foriegn network wifi you may need to restart the network 
-			You may also need to change the network interfaces also.
-			You may need to restart your virtual machine for the changes to take affect.
-
-This setup assume you have the network setup.  
-Should you wish to change physical networks, you need to change these accordingly.
-
-			virtual machine IP: 192.168.1.101 as statuc
-			YOUR dns servers  : 62.208.15.90 62.208.15.89
-
-ENABLE NETWORK SWITCHING
-------------------------
-To enable support for switching network environments do the following
-
-1) Copy the orignal network settings
-
-    cd /etc/network/
-    sudo cp interfaces interfaces.original
-    sudo cp interfaces interfaces.dynamic
-    sudo chmod 600 interfaces.original
-
-2) Change eth0 to static
-
-	a. sudo vi interfaces
-			// Add the following
-	    
-	    iface eth0 inet static
-	    address 192.168.1.101
-	    netmask 255.255.255.0
-	    gateway 192.168.1.254
-	    dns-nameservers 62.208.15.90 62.208.15.89
-	    
-	b. Save and exit vi    
-	    :wq
-	    
-3) Make a copy for future use
-	
-	sudo cp interfaces interfaces.static
-    
-4) Set up BURDShell into virtual machine mode
-
-	a. Edit shell config 
-
-		vi /path/to/shell/Config.php
-	
-	b. Set $virtual_machine to be TRUE.
-	
-	c. Save and exit vi
-		
-		:wq
-	
-5) You should now be able to use 'network static' and 'network dynamic'.
-
-When changing network environments, you may need to restart the virtual machine.

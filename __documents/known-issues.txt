@@ -15,13 +15,7 @@ Running shell with Config::$db_admin_pass set produces the following error messa
 	Warning: Using a password on the command line interface can be insecure.
 
 [CMD][SECURITY]
-When $shell_admin_check is set to FALSE, if the user has not sudo'd bashed (Root priviledge), 
-	then it will echo their password onto scren as they type
-	
-[OSx]
-OSx does not have command history support as rlwrap on Macports has not been tested yet.
-			// May utilze Readline in PHP.
-			
-
-	
-
+When $shell_admin_check is set to FALSE, if the user has not sudo'd bashed then some commands will not run certain services.
+Currently the only functions that are admin required attention 
+	'site create', 'site delete', 'webserver restart' for OSx and Ubuntu
+	'network restart' for Ubuntu only
