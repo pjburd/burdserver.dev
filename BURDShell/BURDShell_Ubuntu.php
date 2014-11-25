@@ -210,7 +210,7 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 				{
 			
 					//Make sure the file exists//Make sure the file exists
-					if (!file_exists( Config::$virtualhost_dir.$user_input)) 
+					if (!file_exists( Config::$virtualhost_dir.$user_input.".conf")) 
 					{
 						$this->print_line("[INFO] Creating site domain '".$user_input."'...");			
 						
@@ -219,13 +219,13 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 	
 						// Change template key names
 						$template = preg_replace("/\[DOMAINNAME\]/", $user_input, $template);	
-						$template = preg_replace("/\[SHELL\_FOLDER\]/", Config::$shell_folder, $template);	
+						$template = preg_replace("/\[SITE\_FOLDER\]/", Config::$site_dir, $template);	
 															
 						// Save file
 						file_put_contents( Config::$virtualhost_dir.$user_input.".conf", $template);		// Mac requires .conf at end
 						
 						// Set up default structure						
-						if (file_exists(Config::$shell_folder."/sites/".$user_input)) 
+						if (file_exists(Config::$site_dir.$user_input)) 
 						{
 							$this->print_line("Site folder '".$user_input."' exists");			
 						}
@@ -233,19 +233,18 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 						{
 							$this->print_line("Creating site folder '".$user_input."' scaffold...");
 							
-							$this->print_output($this->admin_exec("mkdir ".Config::$shell_folder."/sites/".$user_input, FALSE));
-							$this->print_output($this->admin_exec("mkdir ".Config::$shell_folder."/sites/".$user_input."/public", FALSE));
-							$this->print_output($this->admin_exec("mkdir ".Config::$shell_folder."/sites/".$user_input."/private", FALSE));
+							$this->print_output($this->admin_exec("mkdir ".Config::$site_dir.$user_input, FALSE));
+							$this->print_output($this->admin_exec("mkdir ".Config::$site_dir.$user_input."/public", FALSE));
+							$this->print_output($this->admin_exec("mkdir ".Config::$site_dir.$user_input."/private", FALSE));
 														
 							$template = file_get_contents(Config::$shell_folder.'/BURDShell/templates/site-index-file.txt');
 							$template = preg_replace("/\[PROJECT\]/", $user_input, $template);						
 										
-							file_put_contents(Config::$shell_folder."/sites/".$user_input."/public/index.html", $template);
+							file_put_contents(Config::$site_dir.$user_input."/public/index.html", $template);
 							
-							$this->print_output($this->admin_exec("chown -R ".Config::$shell_user." ".Config::$shell_folder."/sites/".$user_input, FALSE));
-							$this->print_output($this->admin_exec("chgrp -R ".Config::$shell_group." ".Config::$shell_folder."/sites/".$user_input, FALSE));
+							$this->print_output($this->admin_exec("chown -R ".Config::$shell_user." ".Config::$site_dir.$user_input, FALSE));
+							$this->print_output($this->admin_exec("chgrp -R ".Config::$shell_group." ".Config::$site_dir.$user_input, FALSE));
 								
-							$this->print_output($out_lines);	
 						}
 						
 
@@ -913,9 +912,8 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 				} 
 				else 
 				{
-				
 					//Make sure the file exists
-					if (!file_exists(Config::$virtualhost_dir.$user_input)) 
+					if (!file_exists(Config::$virtualhost_dir.$user_input.".conf")) 
 					{
 						$this->print_line("[ERROR] site domain '".$user_input."' does not exist.");			
 					}
@@ -983,11 +981,11 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 											else
 											{
 												// Extract contents
-											    exec("tar xzf ".Config::$app_folder."/".$app_versions[0]." --strip-components 1 -C ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);												
+											    exec("tar xzf ".Config::$app_folder."/".$app_versions[0]." --strip-components 1 -C ".Config::$site_dir.$user_input."/public/", $out_lines);												
 											    
 											    // Change permission
-											    exec("chown -R ".Config::$shell_user. " ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);
-											    exec("chgrp -R ".Config::$shell_group. " ".Config::$shell_folder."/sites/".$user_input."/public/", $out_lines);
+											    exec("chown -R ".Config::$shell_user. " ".Config::$site_dir.$user_input."/public/", $out_lines);
+											    exec("chgrp -R ".Config::$shell_group. " ".Config::$site_dir.$user_input."/public/", $out_lines);
 											    
 											}
 											
@@ -996,22 +994,37 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 //ENHANCEMENT: Auto set up config.inc.php with 'blogfish_secret'											
 											switch ($app_name)
 											{
-/*
+
 												case "phpMyAdmin":
+												/*
 													// Set 'blowfish_secret'
 													$random_string = $this->random_string(32);
-													exec("cp ".Config::$shell_folder."/sites/".$user_input."/public/config.sample.inc.php ", $out_lines);
+													$tmp_file = Config::$site_dir.$user_input."/public/config.sample.inc.php";
+													$new_file = Config::$site_dir.$user_input."/public/config.inc.php";
+													
+													if (!file_exists($new_file) && 
+														file_exists($tmp_file))
+													{
+														exec("cp ".$tmp_file. " ".$new_file, $out_lines);
+														
+														// Edit new config file and update blowfish encryption key
+														
+														// Set permissions
+														exec("chown ".Config::$shell_user. " ".$new_file, $out_lines);
+														exec("chgrp ".Config::$shell_group. " ".$new_file, $out_lines);
+													}
+													*/
 													break;
-*/													
 												case "websvn":
 													// Copy include/distconfig.php to include/config.php
-													if (!file_exists(Config::$shell_folder."/sites/".$user_input."/public/include/config.php") && 
-														 file_exists(Config::$shell_folder."/sites/".$user_input."/public/include/distconfig.php") &&
+													$tmp_file = Config::$site_dir.$user_input."/public/include/distconfig.php";
+													$new_file = Config::$site_dir.$user_input."/public/include/config.php";
+												
+													
+													if (!file_exists($new_file) && 
+														 file_exists($tmp_file) &&
 														 file_exists(Config::$shell_folder.'/svn/'))
 													{
-														
-														$tmp_file = Config::$shell_folder."/sites/".$user_input."/public/include/distconfig.php";
-														$new_file = Config::$shell_folder."/sites/".$user_input."/public/include/config.php";
 														exec("cp ".$tmp_file ." " . $new_file, $out_lines);
 													
 														// Set config
@@ -1031,6 +1044,10 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 														exec("chown ".Config::$shell_user. " ".$new_file, $out_lines);
 														exec("chgrp ".Config::$shell_group. " ".$new_file, $out_lines);
 
+													}
+													else
+													{
+														$this->print_line("[WARNING] App '".$app_name."' : Make sure distconfig.php exists and config.php file does not exists within '".Config::$shell_folder."/svn/'");
 													}
 													break;													
 											}
@@ -1456,7 +1473,7 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 		// Folders that will be required to be writable
 		$files[] = Config::$virtualhost_dir; 			
 		$files[] = Config::$shell_folder."/svn/";
-		$files[] = Config::$shell_folder."/sites/";
+		$files[] = Config::$site_dir;
 		$files[] = Config::$backup_folder."/";
 
 		foreach($files as $file) 
@@ -1491,7 +1508,7 @@ class BURDShell_Ubuntu extends BURDShell_interface {
 		
 		//Folders
 		$files[] = Config::$shell_folder."/svn/";
-		$files[] = Config::$shell_folder."/sites/";
+		$files[] = Config::$site_dir;
 		$files[] = Config::$backup_folder."/";
 		$files[] = Config::$shell_folder."/BURDShell/apps/";
 		$files[] = Config::$shell_folder."/BURDShell/templates/";		

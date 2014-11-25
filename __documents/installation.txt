@@ -19,6 +19,27 @@
 Installation
 ============
 
+Software requirements
+=====================
+This is the essential software for a fully working BURDShell.
+
+PHP 		 - 5.3.10+
+MySQL Server - 5.5.34+
+SVN			 - 1.6.17+
+Apache       - 2.2.22+
+
+Compability support for Apache 2.4.3+
+-------------------------------------
+Edit the temlates/ 
+
+	BURDShell/templates/apache2-virtualhost.txt
+	BURDShell/templates/osx-apache2-virtualhost.txt
+
+You will need to uncomment 'Require all granted' and save changes.
+
+			# Uncomment this line if you are using "Apache 2.4.3"
+			#                Require all granted
+
 This installation will assume you have basic knowledge of networking, linux, and virtual machines.
 
 !!!!  IMPORTANT TIPS  !!!!!

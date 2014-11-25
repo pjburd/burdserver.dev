@@ -498,7 +498,7 @@ abstract class BURDShell_interface {
 		// Check to see if index.html exist in project
 	
 		// Count entries in project folder
-		if ($handle = opendir(Config::$shell_folder."/sites/".$project."/public/"))
+		if ($handle = opendir(Config::$site_dir.$project."/public/"))
 		{
 
 			while (false !== ($entry = readdir($handle))) 
@@ -519,12 +519,12 @@ abstract class BURDShell_interface {
 		{
 
 			//Attempt to delete the index.html file
-			unlink(Config::$shell_folder."/sites/".$project."/public/index.html");
+			unlink(Config::$site_dir.$project."/public/index.html");
 
 		}
 		
 		
-		if (!file_exists(Config::$shell_folder."/sites/".$project."/public/index.html"))
+		if (!file_exists(Config::$site_dir.$project."/public/index.html"))
 		{
 			return TRUE;
 		}
@@ -703,13 +703,13 @@ abstract class BURDShell_interface {
 		{
 			case "phpMyAdmin":
 				// Find files 
-					if (file_exists(Config::$shell_folder."/sites/".$project."/public/"."phpmyadmin.css.php"))
+					if (file_exists(Config::$site_dir.$project."/public/"."phpmyadmin.css.php"))
 					{
 						return TRUE;
 					}
 			case "websvn":
 				// Find files 
-					if (file_exists(Config::$shell_folder."/sites/".$project."/public/include/"."distconfig.php"))
+					if (file_exists(Config::$site_dir.$project."/public/include/"."distconfig.php"))
 					{
 						return TRUE;
 					}

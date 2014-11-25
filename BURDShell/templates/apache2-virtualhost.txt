@@ -1,16 +1,18 @@
 <VirtualHost *:80>
         ServerAdmin webmaster@localhost
         ServerName [DOMAINNAME] 
-        DocumentRoot [SHELL_FOLDER]/sites/[DOMAINNAME]/public
+        DocumentRoot [SITE_FOLDER][DOMAINNAME]/public
         <Directory />
                 Options FollowSymLinks
                 AllowOverride None
         </Directory>
-        <Directory [SHELL_FOLDER]/sites/[DOMAINNAME]/public/>
+        <Directory [SITE_FOLDER][DOMAINNAME]/public/>
                 Options Indexes FollowSymLinks MultiViews
                 AllowOverride All
                 Order allow,deny
                 allow from all
+# Uncomment this line if you are using "Apache 2.4.3"
+#                Require all granted
         </Directory>
 
         ErrorLog ${APACHE_LOG_DIR}/error.log

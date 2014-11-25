@@ -19,3 +19,31 @@ When $shell_admin_check is set to FALSE, if the user has not sudo'd bashed then 
 Currently the only functions that are admin required attention 
 	'site create', 'site delete', 'webserver restart' for OSx and Ubuntu
 	'network restart' for Ubuntu only
+
+
+
+
+[SECURITY]
+Apache 2.4.3: Error
+
+In error_log you recieve an error "client denied by server configuration".  This happens on Yosemite
+
+For security reasons Apache added a new directive called 'Require all denied' and 'Require all granted' in Apache 2.4.3+
+	
+	<Directory "your directory here">
+	   Order allow,deny
+	   Allow from all
+	   # New directive needed in Apache 2.4.3: 
+	   Require all granted
+	</Directory>
+
+This version of BURDShell reflects this change in the following files.
+
+	BURDShell/templates/apache2-virtualhost.txt
+	BURDShell/templates/osx-apache2-virtualhost.txt
+
+Uncomment the line if you are using Apache 2.4.3+
+
+Further info
+	http://stackoverflow.com/questions/10351167/apache-client-denied-by-server-configuration
+	

@@ -3,22 +3,75 @@
 Future enhancements
 ===================
 
-Next release 1.2b
-==================
-[DONE]Update command 'svn help' - Added 'tag sample command'
-[DONE]Improved security, removed all 'sudo' in exec commands to prevent accidental password echos.
-[DONE]Added admin checks to commands (site create, site delete, webserver restart)
-[DONE]Enhanced environment check to include a list of WARNINGS For writeable checks to "sites", "backup" "svn" and vhosts folders
-[DONE]Enhanced comments in shell
-[DONE]Tested and documented steps to install rlwrap for OSx on Maverick
-[DONE]Enhanced security, removed 'sudo' completely from system. 
-[DONE]sites and svn can now be managed as regular user (Warnings are shown for further admin commands to run)
-[DONE]Enhanced 'svn create' so it no longer asks for another question for security setup
-[DONE]Enhanced 'svn help' to include 'create and delete' branch with the additional 'delete tag' example
+
+Module system (WIP)
+===================
+Create a module library contain prompt handling for each type e.g. 'svn' will have a different set of details.
+Give ability to create many types of commands
+
+BURDShell.php will load any modules found within BURDShell/modules/
+	
+	
+	// Load modules
+	foreach module found
+		read functions found
+		register each as a known command
+		if command already exists skip and report issue to user as [WARNING] Conflict module function found in [CONFLICT_MODULE] 
+	
+	// Sample module class		
+	BURDShell_module_svn {
+		
+		function __construct()
+		{
+		..
+		// Load config
+		}
+		
+		function svn_help() {
+		...
+		}
+	
+		function svn_create() {
+		
+			.. prompt site name question ... Save nto internal memory var
+		
+			.. prompt messages
+			
+			switch($config::current_os) {
+				ubuntu:
+					...
+					break;
+				osx:
+					...
+					break;
+			}
+			
+			.. return array of output
+			
+			
+		}
+	}
+		
+
+
+
+When the user runs a command, it will attempt to see if the command exists in the registered commands
+
+	// Loaded modules array contains all the known functions (directives allowed)
+
+	// If command found then execute
+	if (in_array (user directive))
+	{
+	
+		BURDShell_module_svn::{directive}();
+//		BURDShell_module_svn::svn_create();
+	}
 
 Next release thoughts
 ======================
 
+Setup Unit tests
+	https://phpunit.de/getting-started.html
 
 Add svn branch support commands
 

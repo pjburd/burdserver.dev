@@ -41,6 +41,7 @@ class Config {
     public static $app_folder = '/home/sysadmin/burdserver.dev/BURDShell/apps'; // App folder location. Don't include leading forward slash.  
     public static $backup_folder = '/home/sysadmin/burdserver.dev/backups';	    // Backup folder location. Don't include leading forward slash.
 	public static $virtualhost_dir = '/home/sysadmin/burdserver.dev/vhosts/'; 	// Must include forward slash
+	public static $site_dir = '/home/sysadmin/burdserver.dev/sites/'; 			 // Location of sites. Must include forward slash
 
 	/*******************
 	 * Network support *

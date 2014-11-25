@@ -27,7 +27,7 @@ class Config {
 	public static $shell_os = 'OSx';					 // Currently only 'Ubuntu' or 'OSx' avialable.
 
     public static $shell_host_domain = 'burdserver.dev'; // Helps with spitting out helpful info and calling servers
-    public static $shell_user = 'sysadmin';			  	 // Main shell user that has 'root' priviledges.  This is the SVN user also    
+    public static $shell_user = 'sysadmin';			  	 // Main shell user that has 'root' priviledges.  This is the SVN user and site owner also    
     public static $shell_group = 'staff';				 // Main shell user's group priviledge
     public static $shell_pass = 'Password1';			 // This is for SVN password.
 
@@ -41,7 +41,8 @@ class Config {
     public static $shell_folder = '/Users/sysadmin/burdserver.dev';				 // Location to shell files and folders. Don't include leading forward slash.        
     public static $app_folder = '/Users/sysadmin/burdserver.dev/BURDShell/apps'; // App folder location. Don't include leading forward slash.  
     public static $backup_folder = '/Users/sysadmin/burdserver.dev/backups';	 // Backup folder location. Don't include leading forward slash.
-	public static $virtualhost_dir = '/Users/sysadmin/burdserver.dev/vhosts/'; 	// Must include forward slash
+	public static $virtualhost_dir = '/Users/sysadmin/burdserver.dev/vhosts/'; 	 // Must include forward slash
+	public static $site_dir = '/Users/sysadmin/burdserver.dev/sites/'; 			 // Location of sites. Must include forward slash
 
 	public static $svn_bin_path = '/usr/bin/';									 // Must include forward slash
 	public static $mysql_bin_path = '/usr/local/mysql/bin/';					 // Must include forward slash	

@@ -1,5 +1,10 @@
 Change log
 ==========
+v1.2.1b [latest]
+* Fixed Apache 2.4.3 security requirement
+* Fixed 'app install' bug where apache virtualhost files with  .conf was ignored
+* Added site folder configuration
+* Fixed 'site create' removed redundant undefined $out_lines print out line
 
 v1.2b
 * Enhanced security, removed 'sudo' from all exec commands completely (So no more scary thoughts of revealing passwords!).
