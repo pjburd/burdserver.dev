@@ -39,7 +39,7 @@ class BURDShell extends BURDShell_interface
 	/*
 	 * @var	object	Version number for shell
 	 */
-	 private $shell_version = '2.0.0';
+	 private $shell_version = '2.0.1';
 	 
 	/*
 	 * @var	object	Instant of shell os type
@@ -287,7 +287,7 @@ class BURDShell extends BURDShell_interface
                         // Prep plugin environment to match shell
                         $this->{$plugin_class}->set_directive($directive);	//Set the primary directive found for plugin to assist with the requested function                        
                         $chk_project = $this->get_project();      
-                        $this->{$plugin_class}->set_project($chk_project);
+                        $this->{$plugin_class}->set_project($chk_project, FALSE);
 
                         // Run plugin
 					    $this->print_line($this->{$plugin_class}->$plugin_function());    			     
@@ -334,7 +334,7 @@ class BURDShell extends BURDShell_interface
 							$this->print_line($this->os_version);  // Print version of OS module
 							break;						
 						case "shell project":
-							$this->set_project();
+							$this->set_project("", TRUE);
 							break;
 						case "version":
 							$this->print_line($this->shell_version);	// Print BURDShell version

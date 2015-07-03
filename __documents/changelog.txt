@@ -1,5 +1,8 @@
 Change log
 ==========
+v2.0.1
+* Fixed constant "project set question request"
+
 v2.0.0
 * Refactored to have all commands as plugins
 
