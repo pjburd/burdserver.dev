@@ -2,6 +2,31 @@ Migrate BURDSHell versions
 ==========================
 Steps to migrate between specific BURDSHell versions.
 
+1.2b to 2.0.0
+-------------
+To upgrade your current BURDShell do the following
+    
+    1) Download the latest BURDShell and extract
+    
+    2) Open up the folder to your working directory for your version of BURDShell
+    
+    3) Rename the following folders to be 'OLD'
+    
+        rename __documents to be __documentsOLD
+        rename BURDShell to be BURDShellOLD
+    
+    4) Copy over the latest folders
+
+            BURDShell
+            __documents
+    
+    5) Make sure shell.php is executable.
+    
+        cd /into/working/burderserver.dev/BURDShell
+        chmod +x shell.php
+        
+    6) Test by running 'shell.php'
+    
 
 1.1.3b to 1.2b
 --------------

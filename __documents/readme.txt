@@ -1,6 +1,6 @@
 /*
     BURDShell: Developer platform shell
-    Copyright (C) 2014  Paul Burden
+    Copyright (C) 2015  Paul Burden
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ About
 =====
 Thank you for choosing 'BURDShell' to manage your development.
 
-BURDShell is a developer platform shell to help manage your private projects in-house before going public via a command line.
+BURDShell is a developer platform shell extensible plugins to help manage your private projects in-house before going public via a command line.
 
 Once the platform shell is setup you can easily creating websites, projects, svn repos, and even backups via a command line.
 
@@ -68,18 +68,18 @@ Software requirements
 =====================
 The shell can function in the following OS environments:
 
-	Virtually on Ubuntu Server 12.04.3 LTS
-	Natively on Ubuntu Desktop 12.04 LTS
-	Natively on Mac OSx 10.9.2
+	Virtually on Ubuntu Server 12.04.3 LTS or later
+	Natively on Ubuntu Desktop 12.04 LTS or later
+	Natively on Mac OSx 10.9.2 or later
 
 All environments require the following minimum primary software to be installed:
-
-Apache2
-PHP
-MySQL
-SVN
-rlwrap (Optional - This assists in remembering the shell commands, making the shell feel smoother)
-
+    
+    Apache2
+    PHP
+    MySQL
+    SVN
+    rlwrap (Optional - This assists in remembering the shell commands, making the shell feel smoother)
+    
 
 Installation
 ============

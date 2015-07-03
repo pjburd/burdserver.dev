@@ -1,0 +1,104 @@
+Plugin development
+==================
+As of v2.0.0 BURDShell is now extendable with plugins.
+
+You can now make as many shell commands as you wish to help further speed up your project management and deployment.
+
+Development Workflow
+--------------------
+1) Pick a name for your plugin e.g. 'backup'. 
+    !! Only [A-Za-z0-9] No special characters - AS this will be the name your class as well !!
+
+2) Create your plugins under BURDShell/plugins/ folder
+
+3) Name the plugin filename with your plugin name.
+
+    Make sure you name it as "BURDShell_[plugin_command].php"
+    
+        e.g. 'BURDShell_backup.php'
+
+4) Edit BURDShell/shell.php and look for the $plugin variable and amend the variable to include your plugin name.
+
+    $plugins = array('site','backup');
+
+5) Test your plugin in BURDShell and enjoy :)
+
+Plugin Code Explain
+-------------------
+// Put in your author details, plugin version and license here
+
+    class BURDShell_backup extends BURDShell_Plugin   // You must extend BURDShell_Plugin
+    {
+        // List of known commands for this plugin - If required you can alias the command to a function name
+        public $commands = array('example3',
+                                 'list' => 'slist',      // "list" has been aliased as it is a reserved PHP function.  BURDShell will call slist if 'backup list' is called
+                                 'example1',
+                                 'example2');
+                                 
+    
+        public function help() 
+        {
+            // Mandatory function that show help for your command
+        }
+    
+        public function slist() 
+        {
+            // Function to list something 
+            // echo output or $this->print_output();           
+        }
+        
+        public function example1()  // Example of referencing the command executed at the shell prompt
+        {
+            if (count($this->directive['args']) == 3) 
+    		{
+    			$revision = $this->directive['args'][2];
+    		}
+        }
+        
+        public function example2()  // Example of accessing the BURDShell loaded config
+        {
+
+        	switch (Config::$shell_os)
+        	{
+            	case 'Ubuntu':
+            	    // Do The Ubuntu way
+            	    break;
+            	case 'OSx':
+            	    // Do The OSx way
+            	    break;
+            }
+        }
+    
+    	public function example3() // Example of restricting access to command unless project environment is verified
+    	{
+    		if ($user_input = $this->validate_project("grants")) 
+    		{
+        	    // Do backup command action.
+        	    
+        	    /*
+            	    Print out the results with $this->print_output() 
+            	      
+        			$this->print_output($out_lines);	 
+        			    Or
+        			$this->print_output("Oops something went wrong", "e");	     // Either 'e,w,i,!,t' produce common tags like ERROR, WARNING, INFO, IMPORTANT or TIP(Includes a break line after tip)
+                */  
+    		}
+        }    
+            
+    	private function validate_project(...) 
+    	{    	 
+        	/*
+        	    Environment rules to verify.
+        	        If all enviromnet ok,
+        	             return $user_input;
+        	        
+                Further examples:
+        	            BURDShell_svn::validate_project() assists in formatting the primary question
+        	            BURDShell_site::validate_project() has a switch to include or exclude config checks
+            */
+            
+            return FALSE;   // MUST always return false at the end
+    	}        
+    }
+
+

@@ -1,5 +1,11 @@
 Change log
 ==========
+v2.0.0
+* Refactored to have all commands as plugins
+
+v1.2.2b
+* Updated 'app install', removed 'database check' as it is not always relevant for all apps (e.g. websvn)
+
 v1.2.1b [latest]
 * Fixed Apache 2.4.3 security requirement
 * Fixed 'app install' bug where apache virtualhost files with  .conf was ignored

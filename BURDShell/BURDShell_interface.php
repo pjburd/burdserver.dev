@@ -1,7 +1,7 @@
 <?php
 /*
     BURDShell: Developer platform shell
-    Copyright (C) 2014  Paul Burden
+    Copyright (C) 2015  Paul Burden
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -50,278 +50,83 @@ abstract class BURDShell_interface {
 	public $config = array('db_admin_pass' => '',
 							'backup_folder' => '/home/sysadmin/backups/',
 							'app_folder' => '/home/sysadmin/BURDShell/apps');
-*/
-	    
-	/*
-	 * Set the network interface to be 'static'
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-	abstract public function network_static();
-
-	/*
-	 * Set the network interface to be 'dynamic'
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function network_dynamic();
-    
-	/*
-	 * Exec command to restart network
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function network_restart();
-
-	/*
-	 * Exec command to see network status
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function network_status();
-    
-	/*
-	 * Exec command to fetch IP address
-	 *
-	 *@access	public	
-	 *@return	string
-	*/
-	abstract public function get_ip_address();
-
-	/*
-	 * Exec command to see webserver status
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function webserver_status();
-    
-	/*
-	 * Exec command to restart webserver
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function webserver_restart();
-
-	/*
-	 * Exec command to create a site webserver
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function site_create();
-    
-	/*
-	 * Exec command to list known site configs
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function site_list();
-
-	/*
-	 * Exec command to list known svn repos
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function svn_list(); 
-       
-	/*
-	 * Display a list of svn help commands for a site repo
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function svn_help();    
-
-	/*
-	 * Exec command to create an svn repo for a site project environment
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function svn_create();
-    
-	/*
-	 * Exec command to delete a svn repo for a site project environment
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function svn_delete();
-    
-	/*
-	 * Exec command to show history for a site project environment
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function svn_history();
-    
-	/*
-	 * Exec command to show revision for a site project environment
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function svn_revision();
-
-	/*
-	 * Exec command to set up initial repo security for 'sysadmin'
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function svn_security();   
-    
-	/*
-	 * Exec command to List known users a svn repo
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function svn_users();
-    
-	/*
-	 * Exec command to List known permissions for a user in an svn repo
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function svn_user();
-    
-	/*
-	 * Exec command to List known permissiosn for a svn repo
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function svn_grants();   
-    
-	/*
-	 * Exec command to test if database exists
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-	abstract public function database_exists($db_name);
-
-
-	/*
-	 * Exec command to list known databases
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function database_list(); 
-    
-	/*
-	 * Exec command to create a database for a site project environment
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function database_create();        
-
-	/*
-	 * Exec command to drop/delete a database for a site project environment
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function database_delete();        
-
-	/*
-	 * Exec command to list known apps
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function app_list(); 
-    
-	/*
-	 * Exec command to install a  known app
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function app_install(); 
-        
-	/*
-	 * Exec command to remove a  known app
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-//!ENHANCEMENT to add app remove functionality
-//    abstract public function app_remove(); 
-        
-	/*
-	 * Exec command to list known backups
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function backup_list(); 
-      
-	/*
-	 * Exec command to backup a site repo  (SVN dump, gzip -9)
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function backup_svn();  
-     
-	/*
-	 * Exec command to restore a site repo backup (SVN dump, gzip -d)
-	 *
-	 *@access	public	
-	 *@return	void
-	*/
-    abstract public function restore_svn();   
-
-                
-	/*
-	 * Check shell required files environment
-	 *
-	 *@access	public	
-	 *@param	boolean	If Shell->debug is TRUE then echo out files checked
-	 *@return	array	An array of string errors  e.g. $errorsp[] = 'File not found'.
-	*/
-    abstract public function check_shell_env($debug=FALSE);
-
+*/	 
+// TODO: Need to merge 'print_output' with 'print_line'.  print_line has tag feature
 	/*
 	 * Print array of string outs.  
 	 * These arrays are produced with php function exec('somecommand' ,$outlines)
 	 *
 	 *@access	public	
-	 *@param	array	 An array of strings to print out
-	 *@param	boolean  Whether to hide comment lines or not.  Default is FALSE
+	 *@param	mixed	 $out_lines    Either an Array of strings to print out or just a String
+	 *@param	boolean  $hide_comments Whether to hide comment lines or not.  Default is FALSE
 	 *@return	void
 	*/
-	public function print_output($out_lines = array(), $hide_comments=FALSE) 
+	public function print_output($out_lines, $hide_comments=FALSE) 
 	{		
-		foreach($out_lines as $out_line) 
+    	if (is_array($out_lines))
+    	{
+    		foreach($out_lines as $out_line) 
+    		{
+    			if ($hide_comments == TRUE)
+    			{
+    				if (preg_match("/^(?![ \t]*#).*$/", $out_line))	// Only print line if it does not match a comment 
+    				{
+    					echo $out_line."\n";						
+    				}
+    			}
+    			else
+    			{
+    				echo $out_line."\n";	// Just spit it out
+    			}
+    		}
+		}
+		else
 		{
-			if ($hide_comments == TRUE)
-			{
-				if (preg_match("/^(?![ \t]*#).*$/", $out_line))	// Only print line if it does not match a comment 
-				{
-					echo $out_line."\n";						
-				}
-			}
-			else
-			{
-				echo $out_line."\n";	// Just spit it out
-			}
+            if ($hide_comments == TRUE)
+    		{
+    			if (preg_match("/^(?![ \t]*#).*$/", $out_line))	// Only print line if it does not match a comment 
+    			{
+    				echo $out_line."\n";						
+    			}
+    		}
+    		else
+    		{
+    			echo $out_line."\n";	// Just spit it out
+    		}
 		}
 	}	
+
+	/*
+	 * Print out a line 
+	 *
+	 *@access	public	
+	 *@param	mixed	$out_line    Either Array of strings or String
+	 *@param	string	$mode     Either 'i' for info, 'w' warning, or 'e' for error
+	 *@return	void
+	*/	
+	public function print_line($out_line, $mode="") 
+	{		
+    	$tag = "";
+    	switch($mode)
+    	{
+        	case "!": $tag = "[IMPORTANT] "; break;
+        	case "i": $tag = "[     INFO] "; break;
+        	case "w": $tag = "[  WARNING] "; break;
+        	case "e": $tag = "[    ERROR] "; break;
+        	case "t": $tag = "[     TIPS]\n"; break;
+    	}
+    	if (is_array($out_line))
+    	{
+            foreach($out_line as $line) 
+            {
+        		echo $tag.$line."\n";
+            }	
+    	}
+    	else
+    	{ 	
+    		echo $tag.$out_line."\n";
+        }
+	}
 	
 	/*
 	 * Removes comments from out
@@ -341,18 +146,6 @@ abstract class BURDShell_interface {
 			}
 		}
 		return $out_array;
-	}
-
-	/*
-	 * Print out a line 
-	 *
-	 *@access	public	
-	 *@param	string	Line to print out
-	 *@return	void
-	*/	
-	public function print_line($out_line) 
-	{		
-		echo $out_line."\n";			
 	}
 
 	/*
@@ -384,13 +177,11 @@ abstract class BURDShell_interface {
 		if (empty($user_input)) 
 		{
 			$this->project = '';
-			$this->print_line("[INFO] Setting shell project to: 'empty'.");	
+			$this->print_line("Setting shell project to: 'empty'.","i");	
 		} 
 		else 
 		{
 			$this->project = $user_input;
-			$this->print_line("[INFO] Setting shell project to: '".$user_input."'.");	
-
 		}
 	}
 
@@ -484,6 +275,45 @@ abstract class BURDShell_interface {
 	}
 
 	/*
+	 * Fetch user directive's command and arguments
+	 *
+	 *@access	public	
+	 *@param	string		User input
+	 *@return	array
+	*/
+    public function fetch_directive($user_input) 
+    {
+    	$out_array = array();
+		$command = "";	        // Default no command found
+    	$args = array();
+    	
+    	if ($user_input)
+    	{
+    		$user_input = preg_replace('!\s+!', ' ', $user_input);	// Remove multiple spaces
+	        
+	        $args = explode(" ", $user_input);		// args found in array
+	        			
+	        if (is_array($args))
+	        {
+	        	if (count($args) >= 2)
+	        	{
+			        $command = $args[0]." ".$args[1];	// We only care about the first two args for command
+			    }
+			    else
+			    {
+			        $command = $args[0];
+
+			    }
+	        }
+    	}    
+    	
+    	$out_array['command'] = $command;
+    	$out_array['args'] = $args;
+    	
+    	return $out_array;
+    }
+	    
+	/*
 	 * Check is only index.html is in the only file in project folder
 	 *
 	 *@access	public	
@@ -557,6 +387,7 @@ abstract class BURDShell_interface {
 		}
 	}
 
+
 	/*
 	 * Executes a commadn if admin has sudo'ed from shell, otherwise the command is shown what is not allowed
 	 *
@@ -572,14 +403,15 @@ abstract class BURDShell_interface {
 		// Check if admin enabled
 		if ($admin_required && posix_getuid() != 0)
 		{
-			$out_lines[] = "[IMPORTANT] For changes to take affect run the following outside BURDShell: '" . $cmd . "'";
+            $this->print_line("For changes to take affect run the following outside BURDShell: '" . $cmd . "'", "!");
 		}
 		else
 		{
 			exec($cmd, $out_lines);    	    
 		}
 		return $out_lines;
-	}
+	}    
+
 
 	/*
 	 * Verify app is a known installable app.
@@ -646,8 +478,8 @@ abstract class BURDShell_interface {
 		}
 		elseif ($ctr > 1) 
 		{
-			$this->print_line("[ERROR] Too many apps found for : '".$app_name."'.");	
-			$this->print_line("[TIP] Browse to ".Config::$app_folder." And make sure there is only one '".$app_name."'");
+			$this->print_line("Too many apps found for : '".$app_name."'.","e");	
+			$this->print_line("Browse to ".Config::$app_folder." And make sure there is only one '".$app_name."'","t");
 
 			echo $out_string."\n";
 		
@@ -655,8 +487,8 @@ abstract class BURDShell_interface {
 		}
 		elseif ($ctr == 0) 
 		{
-			$this->print_line("[ERROR] App not found : '".$app_name."'");
-			$this->print_line("[TIP] Download latest .tar.gz version and copy it into ".Config::$app_folder." folder.");
+			$this->print_line("App not found : '".$app_name."'","e");
+			$this->print_line("Download latest .tar.gz version and copy it into ".Config::$app_folder." folder.","t");
 
 			return FALSE;
 
@@ -733,4 +565,6 @@ abstract class BURDShell_interface {
 	    }
 	    return $randomString;
 	}
+	
+	
 }

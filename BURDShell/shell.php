@@ -2,7 +2,7 @@
 <?php
 /*
     BURDShell: Developer platform shell
-    Copyright (C) 2014  Paul Burden
+    Copyright (C) 2015  Paul Burden
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,7 +18,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Require shell files
+
+/*********
+ * SHELL *
+ *********/   
 
 if (file_exists("/Users/") && file_exists("/Applications/"))		// quick check if we in an OSx environment
 {
@@ -29,13 +32,29 @@ else
 	require_once("Config_Ubuntu.php");					// Include the standard 'Ubuntu' config
 }
 
-require_once("BURDShell.php");
 require_once("BURDShell_interface.php");
+require_once("BURDShell.php");
 require_once("BURDShell_".Config::$shell_os.".php");
 
-// ADD SUDO BASH CHECK WRAPPER around shell.php !!!!!
+/***********
+ * PLUGINS *
+ ***********/   
+ 
+require_once("BURDShell_Plugin.php");
 
+$plugins = array('network','svn','site','app','database','webserver','backup','restore');
 
+$loaded_plugins = array();
+foreach($plugins as $plugin_name) 
+{
+    require_once("plugins/BURDShell_" . $plugin_name . ".php");
+    $plugin_class = "BURDShell_" . $plugin_name;
+    $loaded_plugins[$plugin_name] = new $plugin_class();
+}
+
+/********
+ * INIT *
+ ********/  
 
 if (isset(Config::$shell_admin_check) && Config::$shell_admin_check == TRUE && posix_getuid() != 0)
 {
@@ -52,5 +71,5 @@ else
 	}
 		
 	//Start shell
-	$shell = new BURDShell($project, Config::$shell_os);
+	$shell = new BURDShell($loaded_plugins, $project, Config::$shell_os);
 }

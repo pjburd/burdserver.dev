@@ -1,7 +1,7 @@
 <?php
 /*
     BURDShell: Developer platform shell
-    Copyright (C) 2014  Paul Burden
+    Copyright (C) 2015  Paul Burden
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,18 +17,29 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class BURDShell 
+class BURDShell extends BURDShell_interface
 {
 		 
 	/*
 	 * @var	object	Instant of shown os shell system that gets initalized in construct
 	 */
 	 private $shell;
-	 
+
+	/*
+	 * @var	array    Plugins loaded
+	 */
+	 private $plugins = array();
+	 	 
+
+	/*
+	 * @var	array    Command tree
+	 */
+     private $command_tree = array();
+	 	 
 	/*
 	 * @var	object	Version number for shell
 	 */
-	 private $shell_version = '1.2.1b';
+	 private $shell_version = '2.0.0';
 	 
 	/*
 	 * @var	object	Instant of shell os type
@@ -36,42 +47,39 @@ class BURDShell
 	 private $shell_os = '';
 
 	/*
+	 * @var	object	   System object which includes plugins
+	 */
+	 private $system = FALSE;
+	 
+	 
+	/*
 	 * @var	boolean		Set shell in debug mode
 	 */
 	 private $debug = FALSE;
 
-	 private function print_license($section)
-	 {
-		 switch($section)
-		 {
-		 	case 'copyright':
-				echo "\nBURDShell: Developer platform shell  Copyright (C) 2014  Paul Burden";
-				echo "\nThis program comes with ABSOLUTELY NO WARRANTY; for details type `shell w'.";
-				echo "\nThis is free software, and you are welcome to redistribute it";
-				echo "\nunder certain conditions; type `shell c' for details.\n";
-		 		break;
-			 case 'warranty':
-			 	echo "\nThis program is distributed in the hope that it will be useful,";
-			 	echo "\nbut WITHOUT ANY WARRANTY; without even the implied warranty of";
-			 	echo "\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the";
-			 	echo "\nGNU General Public License for more details.\n";
-			 	break;			 
-			 case 'conditions':
-			 	echo "\nYou understand and respect your system environment.\n";
-			 	break;
-		 }
-	 }
-
     /*
      *@access public
+     *@param	array	Plugins to load
      *@param	string	Optional project to use
      *@param	string	Type of operating system for shell host.  Currently only 'Ubuntu'
+	 *@return	void
      */
-    public function __construct($project="", $shell_os="")
+    public function __construct($plugins, $project="", $shell_os="")
     {
 				
 		$this->debug = Config::$debug;
 		$this->shell_os = $shell_os;
+				
+        // Register plugins
+        foreach($plugins as $plugin_name => $plugin_object) {
+            if (is_object($plugin_object)) {                
+                $this->plugins[]  = $plugin_name;
+                $this->{$plugin_name} = $plugin_object;
+                
+                $this->command_tree[$plugin_name] = $this->{$plugin_name}->get_commands();
+
+            }
+        }
 				
 		$this->print_license('copyright');
 		
@@ -87,7 +95,7 @@ class BURDShell
 	        // Set desired project
 	        if ($project)
 	        {
-		        $this->shell->set_project($project);
+		        $this->set_project($project);
 	        }
 	         
 
@@ -109,7 +117,7 @@ class BURDShell
 			// Find any warnings that we may need to address
 	        echo "\n";	        
 	        $warnings = $this->shell->write_check();
-	        $this->shell->print_output($warnings);
+	        $this->print_output($warnings);
 	        if (!empty($warnings))
 	        {
 				echo "[TIP] You may need to either 'sudo' the shell command e.g. 'sudo shell.php' or check your config settings for ".$shell_os."\n";
@@ -133,6 +141,35 @@ class BURDShell
 	 *@param	array	List of errors formatted with key name as the error type
 	 *@return	void
 	*/
+    private function print_license($section)
+    {
+        switch($section)
+        {
+            case 'copyright':
+                echo "\nBURDShell: Developer platform shell  Copyright (C) 2015  Paul Burden";
+                echo "\nThis program comes with ABSOLUTELY NO WARRANTY; for details type `shell w'.";
+                echo "\nThis is free software, and you are welcome to redistribute it";
+                echo "\nunder certain conditions; type `shell c' for details.\n";
+                break;
+            case 'warranty':
+                echo "\nThis program is distributed in the hope that it will be useful,";
+                echo "\nbut WITHOUT ANY WARRANTY; without even the implied warranty of";
+                echo "\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the";
+                echo "\nGNU General Public License for more details.\n";
+                break;			 
+            case 'conditions':
+                echo "\nYou understand and respect your system environment.\n";
+                break;
+        }
+    }
+    
+	/*
+	 * Prints out any known errors
+	 *
+	 *@access	public	
+	 *@param	array	List of errors formatted with key name as the error type
+	 *@return	void
+	*/
     public function report_error($errors) {
     	if (count($errors)) 
     	{
@@ -145,102 +182,33 @@ class BURDShell
     }    
     
     private function print_menu($menu_type = "main") {
-    	$title = "Help [".$menu_type."]";
-    	 
-        echo "\n".$title;
-        echo "\n";
-        for($i=0; $i<strlen($title); $i++) 
+
+        if ($menu_type == "main")
         {
-	        echo "-";
-        }
-            
+            echo "\nCommands (Type a command for additional help)\n";
+            echo "---------------------------------------------";
+         }   
     	switch($menu_type) 
     	{
     		case "debug":
 				echo "\nshell debugoff : Switch off shell debug";
 				break;
 	    	case "main":
-		        echo "\nsite      : Show site management commands";
-		        echo "\nwebserver : Show webserver management commands";
-				echo "\nnetwork   : Show network management commands";
-				echo "\nsvn       : Show svn management commands";
-				echo "\ndatabase  : Show database management commands";
-				echo "\napp       : Show app management commands";
-				echo "\nbackup    : Show backup management commands";
-				echo "\nrestore   : Show restore backup management commands";
-				echo "\nshell     : Show shell management commands";
-				echo "\nversion   : Print version of BURDShell";
-		        echo "\nquit      : Exit BURDShell";
+	    	    foreach($this->plugins as $plugin_name)
+	    	    {
+    	    	    echo "\n".$plugin_name;
+	    	    }
+				echo "\nshell";
+				echo "\nversion";
+		        echo "\nquit";
 		        echo "\n";
-	    		break;
-	    	case "network":
-				if (Config::$virtual_machine == TRUE)
-				{
-					echo "\nnetwork static  : Set network interface to be static IP";
-					echo "\nnetwork dynamic : Set network interface to be dynamic IP";
-				}
-				echo "\nnetwork status  : Show network interface details";
-		        echo "\n";
-	    		break;
-	    	case "webserver":
-				echo "\nwebserver sites   : Show a list known sites enabled on webserver";
-				echo "\nwebserver status  : Show status of web server";
-				echo "\nwebserver restart : Restart web server";
-		        echo "\n";
-	    		break;
-	    	case "site":
-				echo "\nsite list   : List known site virtualhost configuration files";
-				echo "\nsite create : Create a new site (aka project)";
-				echo "\nsite delete : Delete a site (aka project)";
-				echo "\nsite help   : Shows helpful echo commands for re-enabling site in hosts file";
-		        echo "\n";
-	    		break;
-	    	case "app":
-				echo "\napp list    : List known apps or installed apps";
-				echo "\napp install : Install an app for a site (aka project)";
-//!ENHANCEMENT: Add feature to remove apps
-//				echo "\napp remove  : Remove an app for a site (aka project)";
-		        echo "\n";
-	    		break;
-	    	case "svn":
-				echo "\nsvn list        : List known svn repos";
-				echo "\nsvn help        : Show svn commands for a project environment";
-				echo "\nsvn create      : Create a new repo for a project environment";
-				echo "\nsvn delete      : Delete a repo for a project environment";
-				echo "\nsvn history     : View repo history for a project environment";
-				echo "\nsvn revision    : View repo revision for a project environment";
-				echo "\nsvn log         : View repo log for a project environment";
-//Hidden as we automatically do this when  shell commands 'svn create' and 'restore svn' are executed
-//				echo "\nsvn security : Set up security for a site repo project environment";
-				echo "\nsvn user        : List user permissions for a project environment";
-				echo "\nsvn users       : List users for a project environment";
-				echo "\nsvn grants      : List permissions for a project environment";
-
-				echo "\nsvn serve       : Start SVN service deamon";
-		        echo "\n";
-	    		break;
-	    	case "backup":
-				echo "\nbackup list     : List known backups";
-				echo "\nbackup svn      : Backup repo for a project environment";
-				echo "\nbackup database : Backup database for a project environment";
-		        echo "\n";
-	    		break;
-	    	case "database":
-				echo "\ndatabase list   : List known databases";
-				echo "\ndatabase create : Create a database for a project environment";
-				echo "\ndatabase delete : Drop a database for a project environment";
-		        echo "\n";
-	    		break;
-	    	case "restore":
-				echo "\nbackup list      : List known backups";
-				echo "\nrestore svn      : Restore repo backup for a project environment";
-				echo "\nrestore database : Restore database backup for a project environment";
-		        echo "\n";
-	    		break;
+	    		break;    	    		
 	    	case "shell":
 				echo "\nshell debugon  : Switch on shell debug";
 				echo "\nshell debugoff : Switch off shell debug";
 				echo "\nshell config   : Show config settings";
+				echo "\nshell plugins  : List loaded plugins";
+				echo "\nshell tree     : List all known commands";
 				echo "\nshell project  : Set the desired project to work with.";
 				echo "\nshell os       : Print current operating system module in use";
 				echo "\nshell w	       : Show warranty information";
@@ -285,13 +253,46 @@ class BURDShell
 			}
 			else 
 			{
-				$this->shell->set_directive($directive);	//Set the directive found
+				$this->set_directive($directive);	//Set the directive found
 				
 				// Attempt to find function to run
 				$func_name = preg_replace("/ /", "_", $directive['command']);				
-				if(is_callable(array($this->shell, $func_name))) 
+				if(is_callable(array($this->shell, $func_name)))    // Is internal command?
 				{
-					 $this->shell->$func_name();
+					 $this->$func_name();
+				}
+				elseif(is_array($this->command_tree[$directive['args'][0]])) // Is plugin command?
+				{
+    			     // Run plugin
+                    if (count($directive['args']) == 1) // Show help for this command 
+                    {
+                        // show help
+					    $this->print_line( $this->{$directive['args'][0]}->help() );  
+                    }
+                    else
+                    {                        
+                        // Verify it is not an alias command                        
+                        $plugin_class = $directive['args'][0];
+                        $plugin_func_chk = $directive['args'][1];
+                        
+                        if (isset($this->command_tree[$plugin_class][$plugin_func_chk])) 
+                        {                            
+                            $plugin_function = $this->command_tree[$plugin_class][$plugin_func_chk];    // Alias found
+                        }
+                        else
+                        {
+                            $plugin_function = $directive['args'][1];
+                        }
+
+                        // Prep plugin environment to match shell
+                        $this->{$plugin_class}->set_directive($directive);	//Set the primary directive found for plugin to assist with the requested function                        
+                        $chk_project = $this->get_project();      
+                        $this->{$plugin_class}->set_project($chk_project);
+
+                        // Run plugin
+					    $this->print_line($this->{$plugin_class}->$plugin_function());    			     
+                    }
+    			     	
 				}
 				else
 				{
@@ -299,6 +300,7 @@ class BURDShell
 				    switch ($directive['command']) 
 				    {
 				    	case "help":
+				    	case "?":
 				    		$this->print_menu();
 				    		break;
 				    		
@@ -314,22 +316,34 @@ class BURDShell
 					    case "shell":
 					    	$this->print_menu($directive['command']);
 					    	break;
-		
-						//Basic commands
+
+						/*************************
+    				     * Basic plugin commands *
+    				     *************************/
+						case "shell plugins":
+							$this->print_line(print_r($this->plugins, TRUE));  // Print version of OS module
+							break;			
+						case "shell tree":
+							$this->print_line(print_r($this->command_tree, TRUE));  // Print version of OS module
+							break;			
+
+						/******************
+    				     * Basic commands *
+    				     ******************/
 						case "shell os":
-							$this->shell->print_line($this->shell->os_version);  // Print version of OS module
+							$this->print_line($this->os_version);  // Print version of OS module
 							break;						
 						case "shell project":
-							$this->shell->set_project();
+							$this->set_project();
 							break;
 						case "version":
-							$this->shell->print_line($this->shell_version);	// Print BURDShell version
+							$this->print_line($this->shell_version);	// Print BURDShell version
 							break;					
 				
 						//Shell debug commands
 						case "shell debugon":
-							$this->shell->print_line("Debug mode to see directives and parameters only.");
-							$this->shell->print_line("Type 'shell debugoff' to finish debug session.");
+							$this->print_line("Debug mode to see directives and parameters only.");
+							$this->print_line("Type 'shell debugoff' to finish debug session.");
 							$this->debug = TRUE;
 							break;		
 						case "shell config":
@@ -364,7 +378,7 @@ class BURDShell
 						
 				}
 			}		    
-		    $project = $this->shell->get_project();
+		    $project = $this->get_project();
 		    
 			$this->echo_prompt();
 		    $user_input = trim(fgets(STDIN));
@@ -382,7 +396,7 @@ class BURDShell
 	*/
 	private function echo_prompt()
 	{
-	    $project = $this->shell->get_project();
+	    $project = $this->get_project();
 	    $debug_title = "";
 	    
 	    if ($this->debug == TRUE) 
@@ -400,45 +414,6 @@ class BURDShell
 	}
 	
 	/*
-	 * Fetch user directive's command and arguments
-	 *
-	 *@access	public	
-	 *@param	string		User input
-	 *@return	array
-	*/
-    public function fetch_directive($user_input) 
-    {
-    	$out_array = array();
-		$command = "";	        // Default no command found
-    	$args = array();
-    	
-    	if ($user_input)
-    	{
-    		$user_input = preg_replace('!\s+!', ' ', $user_input);	// Remove multiple spaces
-	        
-	        $args = explode(" ", $user_input);		// args found in array
-	        			
-	        if (is_array($args))
-	        {
-	        	if (count($args) >= 2)
-	        	{
-			        $command = $args[0]." ".$args[1];	// We only care about the first two args for command
-			    }
-			    else
-			    {
-			        $command = $args[0];
-
-			    }
-	        }
-    	}    
-    	
-    	$out_array['command'] = $command;
-    	$out_array['args'] = $args;
-    	
-    	return $out_array;
-    }
-	
-	/*
 	 * Check to see if shell commands is safe to run.  
 	 * If errors found then shell dies to prevent command from ruunning.
 	 *
@@ -447,7 +422,7 @@ class BURDShell
 	*/
     public function is_safe_env() 
     {
-		if ($this->shell->errors_found) {
+		if ($this->errors_found) {
 			echo "\n[NOTICE]Cannot run any commands until shell errors fixed.\n";
 			die;
 		}    
