@@ -254,14 +254,15 @@ class BURDShell extends BURDShell_interface
 			else 
 			{
 				$this->set_directive($directive);	//Set the directive found
-				
+
 				// Attempt to find function to run
 				$func_name = preg_replace("/ /", "_", $directive['command']);				
 				if(is_callable(array($this->shell, $func_name)))    // Is internal command?
 				{
 					 $this->$func_name();
 				}
-				elseif(is_array($this->command_tree[$directive['args'][0]])) // Is plugin command?
+				elseif(!empty($directive['args']) 
+				        && !empty($this->command_tree[$directive['args'][0]])) // Is plugin command?
 				{
     			     // Run plugin
                     if (count($directive['args']) == 1) // Show help for this command 

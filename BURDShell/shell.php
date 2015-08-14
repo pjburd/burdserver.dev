@@ -39,8 +39,7 @@ require_once("BURDShell_".Config::$shell_os.".php");
 /***********
  * PLUGINS *
  ***********/   
- 
-require_once("BURDShell_Plugin.php");
+require_once("BURDshell_Plugin.php");
 
 $plugins = array('network','svn','site','app','database','webserver','backup','restore');
 
