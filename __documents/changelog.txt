@@ -1,5 +1,9 @@
 Change log
 ==========
+v2.0.2
+* Fixed Ubuntu compatibility issue
+* Fixed unknown command crash
+
 v2.0.1
 * Fixed constant "project set question request"
 
