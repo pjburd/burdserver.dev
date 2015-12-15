@@ -285,10 +285,14 @@ class BURDShell extends BURDShell_interface
                             $plugin_function = $directive['args'][1];
                         }
 
-                        // Prep plugin environment to match shell
+                        // Prep plugin environment to match shell                        
                         $this->{$plugin_class}->set_directive($directive);	//Set the primary directive found for plugin to assist with the requested function                        
-                        $chk_project = $this->get_project();      
-                        $this->{$plugin_class}->set_project($chk_project, FALSE);
+                        $chk_project = $this->get_project();    
+                        
+                        if (!empty($chk_project))
+                        {
+                            $this->{$plugin_class}->set_project($chk_project, FALSE);
+                        }
 
                         // Run plugin
 					    $this->print_line($this->{$plugin_class}->$plugin_function());    			     
