@@ -254,18 +254,7 @@ class BURDShell_app extends BURDShell_Plugin
 				} 
 				else 
 				{ 
-					if ($check_config == TRUE && !file_exists(Config::$shell_folder."/svn/".$user_input)) 
-					{ 
-						$this->print_line("site project repo does not exist.","e");	
-					}
-					elseif ($verb == "create" && file_exists(Config::$shell_folder."/svn/".$user_input)) 
-					{ 
-						$this->print_line("site project repo does exits exist.","i");	
-					}
-					else
-					{ 
-    					return $user_input;
-                    }
+					return $user_input;
                 }
             }
         }
