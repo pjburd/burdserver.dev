@@ -295,7 +295,14 @@ class BURDShell extends BURDShell_interface
                         }
 
                         // Run plugin
-					    $this->print_line($this->{$plugin_class}->$plugin_function());    			     
+                        if (method_exists($this->{$plugin_class}, $plugin_function))
+                        {
+    					    $this->print_line($this->{$plugin_class}->$plugin_function());    			     
+					    }
+					    else
+					    {
+						    	echo "\nCommand not recognised under plugin '".$plugin_class."'\n";
+					    }
                     }
     			     	
 				}
