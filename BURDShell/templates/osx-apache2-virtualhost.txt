@@ -11,8 +11,8 @@
                 AllowOverride All
                 Order allow,deny
                 allow from all
-# Uncomment this line if you are using "Apache 2.4.3"
-#                Require all granted
+# Uncomment 'Require all granted' if you are using "Apache 2.4.3" (Known version in OSx)
+                Require all granted
         </Directory>
 
         ErrorLog /var/log/apache2/error_log
