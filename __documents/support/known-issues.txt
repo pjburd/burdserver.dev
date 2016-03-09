@@ -22,6 +22,11 @@ Currently the only functions that are admin required attention
 
 
 
+[CMD][SECURITY]
+If you run the shell not in SUDO mode, then the shell can reveal passwords. (You have been warned)
+
+DB Root password is currently required and is not encrypted. (You have been warned)
+
 
 [SECURITY]
 Apache 2.4.3: Error

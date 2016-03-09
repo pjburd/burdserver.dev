@@ -39,7 +39,7 @@ class BURDShell extends BURDShell_interface
 	/*
 	 * @var	object	Version number for shell
 	 */
-	 private $shell_version = '2.1.2';
+	 private $shell_version = '2.1.3';
 	 
 	/*
 	 * @var	object	Instant of shell os type

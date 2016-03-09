@@ -1,0 +1,126 @@
+Tutorial 
+========
+Test BURDShell out by taking this
+
+
+Commands
+--------
+After starting ./shell.php you can run the following commands for further help.
+
+help      : Brings up help
+site      : Show site management commands
+webserver : Show webserver management commands
+network   : Show network management commands
+svn       : Show svn management commands
+database  : Show database management commands
+app       : Show app management commands
+backup    : Show backup management commands
+restore   : Show restore backup management commands
+shell     : Show shell management commands
+version   : Print version of BURDShell
+quit      : Exit BURDShell
+
+Tour
+----
+// Site create test
+	a. Run BURDShell in basic.dev environment	
+		shell.php basic.dev
+		
+	b. Create the website
+		site create
+			# You will see a message like 'echo "172.16.171.132  basic.dev" >> /etc/hosts'
+	c. Update your /etc/hosts file	
+	
+		sudo bash
+		echo "172.16.171.132  basic.dev" >> /etc/hosts
+
+	d. On your web browser visit http://basic.dev
+
+// SVN test
+	a. Run BURDShell in basic.dev environment	
+	
+		shell.php basic.dev
+		
+	b. Start svn server
+	
+		svn serve
+		
+	c. Create the SVN repo   (This will use the 
+	
+		svn create
+		svn help
+			// Copy command to checkout.
+		quit
+			// Hopefully you left shell and now at terminal prompt.
+			
+	d. Checkout project
+	
+		cd /home/sysadmin
+		mkdir Sites
+		// Now run the copied 'checkout command
+		
+	e. You should now be able check in work.
+	
+// SVN Commit test
+
+	a. Copy the basic site structure setup via previous step
+	
+		cd /home/sysadmin/burdserver.dev/sites/
+		cp -R basic.dev/ /home/sysadmin/Sites				<---- Sites if your working project folder
+		
+	b.  Commit the changes in SVN
+		cd /home/sysadmin/Sites/basic.dev
+		svn add *
+		svn commit
+		
+			// For pico
+				Insert text "Initial project structure"
+				<CTRL>+x
+				<RETURN>
+		
+			// For 'vi' you need to 
+					Press 'i' 
+					Insert text "Initial project structure"
+					Press 'esc'
+					Type :wq
+					<RETURN>			
+					
+					
+	c.  Enter shell and view the commit
+	
+		shell.php basic.dev
+		svn log							<---- This shows your last commit
+		svn revision 1
+				
+// Backup test
+	a. Run BURDShell in basic.dev environment	
+	
+		shell.php basic.dev
+	
+	b. Create SVN backup
+	
+		backup svn
+	
+	c. Delete project
+	
+		svn delete
+		
+	d. Restore project
+	
+		restore svn
+		
+// Database test
+	a. Run BURDShell in basic.dev environment	
+	
+		shell.php basic.dev
+	
+	b. Create database
+	
+		database create
+
+	c. List the database
+	
+		database list
+		//You will need to manually DROP the database - Command not included for safety of accidental delete database.
+
+This concludes the tour of the shell :) Enjoy.

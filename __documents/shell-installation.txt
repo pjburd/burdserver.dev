@@ -20,7 +20,7 @@ BURDShell: Installation of shell only
 =====================================
 
 IMPORTANT
-=========
+---------
 Some commands require 'admin/root priviledge in order to run.  
 Ideally you should run the command as 'root' by either 
 
@@ -31,7 +31,7 @@ run shell.php once you have 'sudo bash'
 
 
 SHELL INSTALLATION
-==================	
+------------------
 
 1) Extract and copy /BURDShell/ folder into /home/sysadmin/
 
@@ -122,40 +122,3 @@ svn add index.php
 //[From client]To commit a change
 svn commit -m "Added index file"
 
-
-TROUBLESHOOTING
-===============
-
-Network unreachable via ping or ssh
-------------------------------------
-The network setting on the virtual machine must be visible to other machines.
-On VMWARE: Network Adaptor should be 'Bridged networking' set to  'auto detect' to pick up 'static' details(need to verify this).
-
-Unauthorisd for SVN
--------------------
-Make sure you have
-	run shell command 'svn security' for the chosen site project.
-
-Also if you have a firewall, make sure you have opened up port 3690 for SVN .
-
-You see "sh: 0: getcwd() failed: No such file or directory"
------------------------------------------------------------
-You are running the shell.php within the working directory that has been deleted.
-Exit the shell.php and change to another folder.
-	
-	e.g. #>cd /home/sysadmin/
-		 #>shell.php
-		  
-
-Connection refused for svn client
-----------------------------------
-You recieve an error from your SVN client that it cannot find.
-
-	svn: E000061: Unable to connect to a repository at URL 'svn://burdserver.dev/home/sysadmin/svn/burdserver.dev/trunk'
-	svn: E000061: Can't connect to host 'burdserver.dev': Connection refused
-
-
-To resolve this, you need to start the SVN server but running the following BURDShell command:
-
-	SHELL>svn serve
-	

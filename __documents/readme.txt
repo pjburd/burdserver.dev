@@ -19,16 +19,33 @@
 README.TXT
 ==========
 
-About
-=====
+
+Contents
+
+1 About
+2 Usage
+3 Installation
+3.1 Software requirements
+3.2 Important safety thoughts!
+3.3 Simple installation (Quick)
+3.4 Server installation (Long)
+3.5 Dedicated server installation (Complex)
+4 Support
+4.1 Server support
+
+
+1 About
+=======
 Thank you for choosing 'BURDShell' to manage your development.
 
 BURDShell is a developer platform shell extensible plugins to help manage your private projects in-house before going public via a command line.
 
 Once the platform shell is setup you can easily creating websites, projects, svn repos, and even backups via a command line.
 
-Usuage
-======
+2 Usage
+=======
+See tutorial.txt for a tour of the system
+
 Shell works in Ubuntu and Mac
 	
 	shell.php 					: Runs the BURDShell without a project selected.  All commands will ask for your desired project.
@@ -42,97 +59,101 @@ For full shell server feature support (Some features are restricted as root is r
 		sudo su -
 	2) Then run the shell command
 		shell.php
+
+
+3 Installation
+==============
+There are two types of installation, dedicated server mirroring within a virtual machine(hard to setup), and native (easier to setup) 
 		
+3.1 Software requirements
+-------------------------
+This is the essential software for a fully working BURDShell.
+
+PHP 		 - 5.3.10+
+MySQL Server - 5.5.34+
+SVN			 - 1.6.17+
+Apache       - 2.2.22+		
+svn          - 1.7.20+
+rlwrap       - 0.42 (For OSx commad history emulation in BURDShell) 
 	
-
-
-Commands
---------
-There are a few commands that utlize a 3rd parameter.   "svn revision" is one of them.
-
-help      : Brings up help
-
-site      : Show site management commands
-webserver : Show webserver management commands
-network   : Show network management commands
-svn       : Show svn management commands
-database  : Show database management commands
-app       : Show app management commands
-backup    : Show backup management commands
-restore   : Show restore backup management commands
-shell     : Show shell management commands
-version   : Print version of BURDShell
-quit      : Exit BURDShell
-
-Software requirements
-=====================
 The shell can function in the following OS environments:
 
 	Virtually on Ubuntu Server 12.04.3 LTS or later
 	Natively on Ubuntu Desktop 12.04 LTS or later
 	Natively on Mac OSx 10.9.2 or later
 
-All environments require the following minimum primary software to be installed:
-    
-    Apache2
-    PHP
-    MySQL
-    SVN
-    rlwrap (Optional - This assists in remembering the shell commands, making the shell feel smoother)
-    
+3.2 Important safety thoughts!
+------------------------------
+Installing in a virtual machine enviromnemt for your own additional safety.
 
-Installation
-============
-There are two types of installation, dedicated server mirroring within a virtual machine(hard to setup), and native (easier to setup) 
+Switching the network to private 'host-only' for additional safety of your projects you work on to begin with.
+
+Make sure you change IP address, passwords, certificates and usernames as you see fit.
+
+[Optional security]
+Make sure you harden your server before you switching network to public or private phsyical networking in a shared office.
+
 		
-Quick installation (Easy)
--------------------------
+3.3 Simple installation (Quick)
+------------------------------
 The following files are provided to help with quick installation
 
 	native-install-ubuntu.txt : Quick installation of BURDShell on Ubuntu.
 	native-install-osx.txt    : Quick installation of BURDShell on OSx.
 	
-	Both have a 'shell tour' where you create a simple site with repo.
-
-Long installation (Hard)
-------------------------
+3.4 Server installation (Long)
+------------------------------
 These are steps to setup a dedicate environment.  Ideal for dedicated mirroring of project system.
 
-	server-install-steps.txt : All the main steps to creating the perfect shell environment. 
-									This will set up FTP, SSL, SSH, Apache, MySQL, PHP
-									There are optional extras (some not fully tested, you have been warned)
+	support/server/server-install-steps.txt : All the main steps to creating the perfect shell environment. 
+          									  This will set up FTP, SSL, SSH, Apache, MySQL, PHP
+        									  There are optional extras (some not fully tested, you have been warned)
 	
-	shell-readme.txt		  :	Follow 'SHELL INSTALLATION' steps in 'shell-readme.txt'
+	shell-installation.txt		            : Follow 'SHELL INSTALLATION' steps in 'shell-readme.txt'
 	
-	server-user-guide.txt     : Managing the server guide (DRAFT rough guide).
+	support/server/server-user-guide.txt    : Managing the server guide (DRAFT rough guide).
 
-Support
-=======
+3.5 Dedicated server installation (Complex)
+-------------------------------------------
+
+Currently only Ubuntu server 12.04 LTS is only available.
+
+1) Choose desired virtual machine OS software
+		e.g. VirtualBox, VMWare, or VirtualPC
+
+2) Follow the 'server-install-steps.txt' steps
+
+		!!!! Take special care with using unique passwords - Change 'Current servers' details !!!!!
+		!!!! HARDENING SERVER - Take care to noting down unique PORTS !!!!
+
+3) Follow 'SHELL INSTALLATION' steps in 'shell-readme.txt'
+
+4) Take note of the foolowing
+		'virtual-install-[Desired OS].txt
+		'switching-networks.txt'
+
+
+Touch wood, Your envionment should be ready.
+
+
+4 Support
+=========
 Documentation can be found in __documents/  folder
 
 More documentation can be helpful.
+support/tutorial.txt              : Test tour of all the main features of BURDShell
+support/plugin-development.txt    : Expand your BURDShell commands by creating your own plugins.
+support/changelog.txt             : Version history of changes
+support/enhancement-notes.txt	  : Thoughts and notes about future enhancements
+support/known-issues.txt	      : Known issues about security or current defects
+support/migration.txt	          : Migration steps between specific BURDShell versions
+support/troubleshoot.txt          : Known solvable problems
 
-enhancement-notes.txt	  : Thoughts and notes about future enhancements
-installation.txt          : Additional installation notes for dedicated installation
-shell-readme.txt          : Only steps to setting up BURDShell environment only
-switching-networks.txt    : A brief guide to understanding the various ways to broadcasting your projects.
+4.1 Server support
+------------------
+Below is guides to assist in setting up dedicated servers for BURDShell that maybe shared.
 
-Future documentation will be also available in public/ folder
-
-KNOWN ISSUES
-============
-
-Major security issue 
---------------------
-If you run the shell not in SUDO mode, then the shell can reveal passwords. (You have been warned)
-
-DB Root password is currently required and is not encrypted. (You have been warned)
-
-Minor issues
-------------
-Mac does not have command history support as rlwrap on Macports has not been tested yet.
-			// May utilze Readline in PHP.
-			
-
-
-
+support/server/server-install-steps.txt : Basic Ubuntu dedicated server installation
+support/server/server-user-guide.txt    : Server guide (WIP)
+support/server/switching-networks.txt   : Virtual machine guide to switching between networks to broadcast BURDShell
+support/server/virtual-install-ubuntu.txt : Setup Virtual machine public broadcasting (Expiremental)

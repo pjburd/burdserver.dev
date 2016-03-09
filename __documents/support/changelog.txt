@@ -1,25 +1,35 @@
 Change log
 ==========
-v2.0.2
+NOTE: Dates missing, mean they were not published on github)
+
+v2.1.3 (Mar 9 2016)
+* Tidied up '__documents/' folder
+
+v2.1.2 (Dec 17, 2015)
+* OSx apache virtualhosts corrected
+* Changed "app install" commmand to ignore svn checks
+* Fixed shell crash to unknown commands not loaded
+
+v2.0.2 (Aug 14, 2015)
 * Fixed Ubuntu compatibility issue
 * Fixed unknown command crash
 
-v2.0.1
+v2.0.1 (Jul 3, 2015)
 * Fixed constant "project set question request"
 
-v2.0.0
+v2.0.0 (Jul 3, 2015)
 * Refactored to have all commands as plugins
 
 v1.2.2b
 * Updated 'app install', removed 'database check' as it is not always relevant for all apps (e.g. websvn)
 
-v1.2.1b [latest]
+v1.2.1b (Nov 25, 2014)
 * Fixed Apache 2.4.3 security requirement
 * Fixed 'app install' bug where apache virtualhost files with  .conf was ignored
 * Added site folder configuration
 * Fixed 'site create' removed redundant undefined $out_lines print out line
 
-v1.2b
+v1.2b (Aug 9, 2014)
 * Enhanced security, removed 'sudo' from all exec commands completely (So no more scary thoughts of revealing passwords!).
 * Enhanced environment setup check to include a list of WARNINGS For writeable checks to "sites", "backup" "svn" and vhosts folders
 * BURDShell can now run fully under 'user' ownership.  
@@ -29,20 +39,20 @@ v1.2b
 * Enhanced 'svn create' so 2nd question is not asked again.
 
 
-v1.1.3b (2014-05-05)
+v1.1.3b (May 5, 2014)
 
 * Fixed command 'app install' for both Ubuntu and OSx (Corrected invalid false return on is_project_empty() )
 
-v1.1.2b (2014-05-05)
+v1.1.2b
 
 * Fixed command 'app install' for OSx
 * Updated command 'svn help' - Tag release 1.0 sample command
 
-v1.1.1b (2014-05-05)
+v1.1.1b
 
 * Fixed command 'app install' PHP warning messages
 
-v1.1b (2014-05-05)
+v1.1b
 
 * Tidied up config files
 * Added missing .gitignore to repo (Verify this works)
@@ -58,7 +68,7 @@ v1.1b (2014-05-05)
 * Updated 'svn security' to use 'Config:$shell_user' and 'sed' calls now makes .bk files
 * Added README.md from github
 
-v1.0b (2014-03-01)
+v1.0b (Mar 2, 2014)
 
 * Installs natively and virtually with Ubuntu (12.04 LTS desktop / server)
 * Installs natively on OSx (10.9.2)

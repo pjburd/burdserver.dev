@@ -3,7 +3,7 @@ BURDShell
 
 Developer platform shell with plugin extendability.
 
-Current release v2.1.2
+Current release v2.1.3
     
 Demo of BURDShell in action: https://www.youtube.com/watch?v=BbO7CDz3b6k
 
