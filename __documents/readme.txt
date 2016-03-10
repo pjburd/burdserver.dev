@@ -26,10 +26,9 @@ Contents
 2 Usage
 3 Installation
 3.1 Software requirements
-3.2 Important safety thoughts!
-3.3 Simple installation (Quick)
-3.4 Server installation (Long)
-3.5 Dedicated server installation (Complex)
+3.2 Simple installation (Quick)
+3.3 Server installation (Long)
+3.4 Dedicated server installation (Complex)
 4 Support
 4.1 Server support
 
@@ -81,27 +80,15 @@ The shell can function in the following OS environments:
 	Virtually on Ubuntu Server 12.04.3 LTS or later
 	Natively on Ubuntu Desktop 12.04 LTS or later
 	Natively on Mac OSx 10.9.2 or later
-
-3.2 Important safety thoughts!
-------------------------------
-Installing in a virtual machine enviromnemt for your own additional safety.
-
-Switching the network to private 'host-only' for additional safety of your projects you work on to begin with.
-
-Make sure you change IP address, passwords, certificates and usernames as you see fit.
-
-[Optional security]
-Make sure you harden your server before you switching network to public or private phsyical networking in a shared office.
-
 		
-3.3 Simple installation (Quick)
+3.2 Simple installation (Quick)
 ------------------------------
 The following files are provided to help with quick installation
 
 	native-install-ubuntu.txt : Quick installation of BURDShell on Ubuntu.
 	native-install-osx.txt    : Quick installation of BURDShell on OSx.
 	
-3.4 Server installation (Long)
+3.3 Server installation (Long)
 ------------------------------
 These are steps to setup a dedicate environment.  Ideal for dedicated mirroring of project system.
 
@@ -113,12 +100,12 @@ These are steps to setup a dedicate environment.  Ideal for dedicated mirroring 
 	
 	support/server/server-user-guide.txt    : Managing the server guide (DRAFT rough guide).
 
-3.5 Dedicated server installation (Complex)
+3.4 Dedicated server installation (Complex)
 -------------------------------------------
 
 Currently only Ubuntu server 12.04 LTS is only available.
 
-1) Choose desired virtual machine OS software
+1) Choose desired virtual machine OS software (Optional)
 		e.g. VirtualBox, VMWare, or VirtualPC
 
 2) Follow the 'server-install-steps.txt' steps

@@ -39,6 +39,20 @@ Email server
 UFW
 
 
+Important safety thoughts
+-------------------------
+Installing in a virtual machine enviromnemt for your own additional safety.
+
+Switching the network to private 'host-only' for additional safety of your projects you work on to begin with.
+
+Make sure you change IP address, passwords, certificates and usernames as you see fit.
+
+[Optional security]
+Make sure you harden your server before you switching network to public or private phsyical networking in a shared office.
+
+
+
+
 Handy linux command
 ===================
 

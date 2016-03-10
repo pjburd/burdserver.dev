@@ -63,14 +63,8 @@ Installation
 
 5) Setup the 'burdserver.dev' IP address (This allows for faster interaction with server)
 
-	a. Find out IP of machine
-	
-		ifconfig
-		
-	b. Setup /etc/hosts file
-
 		sudo bash	
-		echo "172.16.171.132  burdserver.dev" >> /etc/hosts
+		echo "127.0.0.1  burdserver.dev" >> /etc/hosts
 
 6) Hopefully you should now be able to start using the shell.
 
